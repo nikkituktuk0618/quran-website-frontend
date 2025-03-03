@@ -1,0 +1,40 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-secondary text-secondary-foreground font-inter;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-playfair;
+  }
+}
+
+@layer components {
+  .nav-link {
+    @apply text-secondary-foreground/80 hover:text-secondary-foreground transition-colors duration-200;
+  }
+
+  .btn-primary {
+    @apply px-6 py-3 bg-primary text-secondary font-medium rounded-full 
+    hover:bg-primary-hover transition-all duration-300 
+    hover:shadow-lg hover:shadow-primary/20;
+  }
+
+  .glass-card {
+    @apply bg-accent/30 backdrop-blur-md border border-white/10 rounded-2xl;
+  }
+
+  .section-padding {
+    @apply py-20 px-6 md:px-12 lg:px-24;
+  }
+}
+
+.hero-gradient {
+  background: linear-gradient(to bottom, rgba(26,31,44,0.8), rgba(26,31,44,0.95));
+}

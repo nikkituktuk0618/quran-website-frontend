@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -43,6 +42,11 @@ export default {
       fontFamily: {
         playfair: ["Playfair Display", "serif"],
         inter: ["Inter", "sans-serif"],
+        berkshire: ['"Berkshire Swash"', "cursive"],
+        poppins: ["Poppins", "sans-serif"],
+        raleway: ["Raleway", "sans-serif"],
+        italiana: ["Italiana", "serif"],
+        abhaya: ["Abhaya Libre", "serif"],
       },
       animation: {
         "fade-in": "fadeIn 0.5s ease-out forwards",

@@ -1,15 +1,13 @@
-import AboutGroup from "../../assets/about_group.jpg";
-
 const AboutSection = () => {
   return (
     <section id="about" className="section-padding pt-16">
       <div className="container mx-auto">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
-            <div className="text-primary uppercase tracking-wider text-sm">
+            <div className="text-primary tracking-wider font-italiana text-2xl font-medium">
               The Story Of
             </div>
-            <h2 className="text-4xl font-playfair font-bold">About Me</h2>
+            <h2 className="text-6xl font-bold font-abhaya">About Me</h2>
             <p className="text-secondary-foreground/80 leading-relaxed">
               I have always been a curious person, constantly searching for
               answers and questioning everything around me. Like everyone,
@@ -46,7 +44,7 @@ const AboutSection = () => {
           <div className="relative">
             <div className="glass-card p-6">
               <img
-                src={AboutGroup}
+                src={"/about_group.jpg"}
                 alt="About us"
                 className="rounded-xl w-full h-[400px] object-cover"
               />

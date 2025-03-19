@@ -8,6 +8,8 @@ import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
+import Admin from "./pages/Admin";
+import ProtectedRoutes from "./components/common/ProtectedRoutes";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +25,8 @@ const App = () => (
           <Route path="*" element={<NotFound />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
+          {/* <Route path="/admin" element={<Login />} /> */}
+          <Route path="/admin" element={<ProtectedRoutes><Admin /></ProtectedRoutes>} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

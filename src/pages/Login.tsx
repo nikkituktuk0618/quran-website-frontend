@@ -1,8 +1,27 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [userData,setUserData] = useState({
+    email:"",
+    password:""
+  })
+  const route = useNavigate()
+
+  const handleChange = (e:React.ChangeEvent<HTMLInputElement>,type:string) =>{
+    const inputText = e.target.value
+    setUserData((prev)=>({
+      ...prev,
+      [type]:inputText
+    }))
+  }
+
+  const handleSubmit = () =>{
+    if(userData.email === "somu@gmail.com" && userData.password === "somu@123"){
+      route("/admin")
+    }
+  }
 
   return (
     <div className="flex min-h-screen">
@@ -74,6 +93,7 @@ const Login = () => {
                 type="email"
                 className="w-full p-2 border border-gray-300 rounded bg-gray-50 text-gray-900"
                 placeholder="username@gmail.com"
+                onChange={(e)=>handleChange(e,"email")}
               />
             </div>
 
@@ -86,6 +106,7 @@ const Login = () => {
                   type={showPassword ? "text" : "password"}
                   className="w-full p-2 border border-gray-300 rounded bg-gray-50 text-gray-900"
                   placeholder="••••••••"
+                  onChange={(e)=>handleChange(e,"password")}
                 />
                 <button
                   type="button"
@@ -136,6 +157,7 @@ const Login = () => {
             <button
               type="submit"
               className="w-full bg-[#DEC88E] hover:bg-[#beab79] text-black font-medium py-2 px-4 rounded-full transition-colors mb-6 font-poppins"
+              onClick={handleSubmit}
             >
               LOGIN
             </button>

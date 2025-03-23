@@ -1,12 +1,12 @@
-import React from 'react'
-import CustomTable from '../common/Table'
 import { adminDashboardCardn } from '@/utils/constant'
+import React from 'react'
 import Card from '../common/Card'
+import CustomTable from '../common/Table'
 
-export default function Students() {
+function Videos() {
   return (
     <div className="w-full pt-10 h-[calc(100%-50px)]">
-      <section className="w-full flex flex-col gap-5 items-center">
+      <section className="w-full flex flex-col gap-5 items-center ">
         <div className="w-[90%] flex flex-wrap justify-between">
           {adminDashboardCardn.map((item, index) => (
             <div key={index}>
@@ -26,3 +26,5 @@ export default function Students() {
     </div>
   )
 }
+
+export default Videos

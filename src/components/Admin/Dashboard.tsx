@@ -1,17 +1,13 @@
 import React from "react";
 import Card from "../common/Card";
-import { adminDashboardCardn } from "@/utils/constant";
+import { adminCapsuleList, adminDashboardCardn } from "@/utils/constant";
+import CustomTable from "../common/Table";
+import Capsule from "../common/Capsule";
 
 function Dashboard() {
   return (
-    <div className="w-full">
-      <nav className="w-full h-[50px] border-b flex justify-end gap-2 items-center px-10">
-        <span className="bg-blue-400 px-3 py-1 rounded-full font-semibold">
-          A
-        </span>
-        <span className="font-semibold text-sm">Admin</span>
-      </nav>
-      <section className="w-full flex justify-center pt-10">
+    <div className="w-full pt-10 h-[calc(100%-50px)]">
+      <section className="w-full flex flex-col gap-5 items-center ">
         <div className="w-[90%] flex flex-wrap justify-between">
           {adminDashboardCardn.map((item, index) => (
             <div key={index}>
@@ -23,6 +19,12 @@ function Dashboard() {
               />
             </div>
           ))}
+        </div>
+        <div className="py-8 w-full flex justify-center">
+         <div className="w-[90%]"><Capsule data={adminCapsuleList}/></div> 
+        </div>
+        <div className="w-full flex justify-center">
+          <div className="w-[90%]"><CustomTable/></div>
         </div>
       </section>
     </div>

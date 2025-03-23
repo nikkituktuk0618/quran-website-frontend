@@ -5,7 +5,7 @@ const Admin = () => {
   const [currentBar, setCurrentBar] = useState(adminPanelNavList[0].name ?? "");
   return (
     <section className="min-h-screen flex">
-      <div className="w-[220px] border-r min-h-screen px-2 py-2">
+      <div className="w-[220px] border-r min-h-screen px-2 py-2 fixed">
         <div className="flex justify-center w-full pb-10">
           <img src="/logo.png" alt="" width={60} height={60} />
         </div>
@@ -23,7 +23,13 @@ const Admin = () => {
           ))}
         </div>
       </div>
-      <div className="min-h-screen w-[calc(100%-220px)]">
+      <div className="min-h-screen w-full pl-[220px] pb-8">
+        <nav className="w-full h-[50px] border-b flex justify-end gap-2 items-center px-10">
+                <span className="bg-blue-400 px-3 py-1 rounded-full font-semibold">
+                  A
+                </span>
+                <span className="font-semibold text-sm">Admin</span>
+              </nav>
         {adminPanelNavPages[currentBar]}
       </div>
     </section>

@@ -16,13 +16,14 @@ export default function CardList({
   creator,
   rating,
   content,
+  icon
 }) {
   return (
       <Card key={key} className="w-64 p-4">
         <CardContent className="flex flex-col gap-1.5">
           {/* Placeholder for Image or Thumbnail */}
-          <div className="h-[150px] w-full bg-black rounded-lg"></div>
-
+          {/* <div className="h-[150px] w-full bg-black rounded-lg"></div> */}
+          <img src={icon} alt="" className="h-[150px] w-full rounded-lg"/>
           {/* Course Details */}
           <div className="flex justify-between items-center">
             <span className="text-sm">{name}</span>

@@ -1,7 +1,4 @@
-import { adminDashboardCardn, coursesdata } from "@/utils/constant";
-import React from "react";
-import Card from "../common/Card";
-import CustomTable from "../common/Table";
+import { coursesdata } from "@/utils/constant";
 import CardList from "../common/CardList";
 
 function Courses() {
@@ -23,6 +20,7 @@ function Courses() {
               lessons={item.lessons}
               rating={item.rating}
               name={item.name}
+              icon={item.icon}
             />
           ))}
         </div>

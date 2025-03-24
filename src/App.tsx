@@ -10,6 +10,11 @@ import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import Admin from "./pages/Admin";
 import ProtectedRoutes from "./components/common/ProtectedRoutes";
+import AdminLogin from "./pages/AdminLogin";
+import Videos from "./components/Admin/Videos";
+import Playlists from "./components/Admin/Playlists";
+import Students from "./components/Admin/Students";
+import Courses from "./components/Admin/Courses";
 
 const queryClient = new QueryClient();
 
@@ -25,8 +30,26 @@ const App = () => (
           <Route path="*" element={<NotFound />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
-          {/* <Route path="/admin" element={<Login />} /> */}
-          <Route path="/admin" element={<ProtectedRoutes><Admin /></ProtectedRoutes>} />
+          <Route path="/dailyquran/admin/login" element={<AdminLogin />} />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoutes>
+                <Admin />
+              </ProtectedRoutes>
+            }
+          >
+            <Route
+              path="students"
+              element={<Students />}
+            />
+            <Route path="playlist" element={<Playlists />} />
+            <Route path="courses" element={<Courses />} />
+            <Route
+              path="video"
+              element={<Videos />}
+            />
+          </Route>
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

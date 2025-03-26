@@ -19,7 +19,7 @@ export default function CardList({
   icon
 }) {
   return (
-      <Card key={key} className="w-64 p-4">
+      <Card key={key} className="md:w-64 w-[180px] p-4">
         <CardContent className="flex flex-col gap-1.5">
           {/* Placeholder for Image or Thumbnail */}
           {/* <div className="h-[150px] w-full bg-black rounded-lg"></div> */}

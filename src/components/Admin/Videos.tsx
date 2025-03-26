@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import CreateVideo from "./Videos/CreateVideos";
+import { motion } from "framer-motion";
 
 function Videos() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -20,6 +21,15 @@ function Videos() {
       video.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       video.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
+  const listVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { staggerChildren: 0.1 } },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+  };
   return (
     <div className="w-full pt-10 h-[calc(100%-50px)]">
       <section className="w-full flex flex-col gap-5 items-center ">
@@ -41,14 +51,14 @@ function Videos() {
                 className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition"
               >
                 {!createVideo && <Plus size={20} />}
-                <span>{createVideo ? "Go Back":"Create Video"}</span>
+                <span>{createVideo ? "Go Back" : "Create Video"}</span>
               </button>
             </div>
           </div>
 
           {createVideo ? (
-            <CreateVideo close={setCreateVideo}/>
-          ):
+            <CreateVideo close={setCreateVideo} />
+          ) : (
             <>
               <div className="relative my-6">
                 <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
@@ -63,14 +73,20 @@ function Videos() {
                 />
               </div>
 
-              <div className="space-y-4">
+              <motion.div
+                className="space-y-4"
+                initial="hidden"
+                animate="visible"
+                variants={listVariants}
+              >
                 {filteredVideos.map((video) => (
-                  <div
+                  <motion.div
                     key={video.id}
                     className="border border-gray-200 rounded-md p-4 hover:shadow-md transition"
+                    variants={itemVariants}
                   >
-                    <div className="flex justify-between">
-                      <div className="flex">
+                    <div className="flex justify-between flex-col md:flex-row">
+                      <div className="flex flex-col md:flex-row">
                         <div className="relative w-32 h-24 bg-gray-200 rounded-md mr-4 flex-shrink-0 overflow-hidden">
                           <img
                             src={video.thumbnail}
@@ -132,11 +148,11 @@ function Videos() {
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
             </>
-          }
+          )}
         </div>
       </section>
     </div>

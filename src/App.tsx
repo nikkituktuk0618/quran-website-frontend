@@ -15,6 +15,9 @@ import Videos from "./components/Admin/Videos";
 import Playlists from "./components/Admin/Playlists";
 import Students from "./components/Admin/Students";
 import Courses from "./components/Admin/Courses";
+import PlaylistByID from "./components/Admin/PlayList/PlaylistByID";
+import CourseByID from "./components/Admin/Course/CourseByID";
+import VideoByID from "./components/Admin/Videos/VideoByID";
 
 const queryClient = new QueryClient();
 
@@ -41,13 +44,59 @@ const App = () => (
           >
             <Route
               path="students"
-              element={<Students />}
+              element={
+                <ProtectedRoutes>
+                  <Students />
+                </ProtectedRoutes>
+              }
             />
-            <Route path="playlist" element={<Playlists />} />
-            <Route path="courses" element={<Courses />} />
+            <Route
+              path="playlist"
+              element={
+                <ProtectedRoutes>
+                  <Playlists />
+                </ProtectedRoutes>
+              }
+            />
+            <Route
+              path="playlist/:playlistID"
+              element={
+                <ProtectedRoutes>
+                  <PlaylistByID />
+                </ProtectedRoutes>
+              }
+            />
+            <Route
+              path="courses"
+              element={
+                <ProtectedRoutes>
+                  <Courses />
+                </ProtectedRoutes>
+              }
+            />
+            <Route
+              path="courses/:courseID"
+              element={
+                <ProtectedRoutes>
+                  <CourseByID />
+                </ProtectedRoutes>
+              }
+            />
             <Route
               path="video"
-              element={<Videos />}
+              element={
+                <ProtectedRoutes>
+                  <Videos />
+                </ProtectedRoutes>
+              }
+            />
+            <Route
+              path="video/:videoID"
+              element={
+                <ProtectedRoutes>
+                  <VideoByID />
+                </ProtectedRoutes>
+              }
             />
           </Route>
         </Routes>

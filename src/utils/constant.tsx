@@ -1,9 +1,3 @@
-import Courses from "@/components/Admin/Courses"
-import Dashboard from "@/components/Admin/Dashboard"
-import Playlists from "@/components/Admin/Playlists"
-import Students from "@/components/Admin/Students"
-import Videos from "@/components/Admin/Videos"
-
 export const adminPanelNavList = [
     {
         name:"Dashboard",
@@ -27,13 +21,6 @@ export const adminPanelNavList = [
     }
 ]
 
-// export const adminPanelNavPages = {
-//         "Dashboard":<Dashboard/>,
-//         "Students":<Students/>,
-//         "My Courses":<Courses/>,
-//         "My Playlist":<Playlists/>,
-//         "My Videos":<Videos/>,
-// }
 
 export const adminDashboardCardn = [
     {

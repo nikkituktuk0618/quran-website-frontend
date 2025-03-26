@@ -2,6 +2,7 @@ import { adminplaylists } from "@/utils/constant";
 import { Search, Video, MoreHorizontal, Plus } from "lucide-react";
 import { useState } from "react";
 import CreatePlaylist from "./PlayList/CreatePlaylist";
+import { motion } from "framer-motion";
 
 function Playlists() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -12,6 +13,16 @@ function Playlists() {
       playlist.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       playlist.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const listVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { staggerChildren: 0.1 } },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+  };
 
   return (
     <div className="w-full pt-10 h-[calc(100%-50px)]">
@@ -31,13 +42,13 @@ function Playlists() {
               className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition"
             >
               {!createPlaylist && <Plus size={20} />}
-              <span>{createPlaylist ? "Go Back":"Create Playlist"}</span>
+              <span>{createPlaylist ? "Go Back" : "Create Playlist"}</span>
             </button>
           </div>
 
           {createPlaylist ? (
-            <CreatePlaylist close={setCreatePlaylist}/>
-          ):
+            <CreatePlaylist close={setCreatePlaylist} />
+          ) : (
             <>
               <div className="relative my-6">
                 <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
@@ -52,18 +63,23 @@ function Playlists() {
                 />
               </div>
 
-              <div className="space-y-4">
+              <motion.div
+                className="space-y-4"
+                initial="hidden"
+                animate="visible"
+                variants={listVariants}
+              >
                 {filteredPlaylists.map((playlist) => (
-                  <div
+                  <motion.div
                     key={playlist.id}
                     className="border border-gray-200 rounded-md p-4 hover:shadow-md transition"
+                    variants={itemVariants}
                   >
                     <div className="flex justify-between">
                       <div className="flex">
                         <div
                           className={`w-16 h-16 ${playlist.color} flex items-center justify-center rounded-md mr-4 flex-shrink-0`}
                         >
-                          {/* <span className="text-2xl">{playlist.icon}</span> */}
                           <img
                             src={playlist.icon}
                             alt={playlist.title}
@@ -94,11 +110,11 @@ function Playlists() {
                         </button>
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
             </>
-          }
+          )}
         </div>
       </section>
     </div>

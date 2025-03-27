@@ -42,6 +42,7 @@ function Courses() {
               >
                 <CardList
                   key={index}
+                  id={index}
                   content={item.content}
                   creator={item.creator}
                   rate={item.rate}

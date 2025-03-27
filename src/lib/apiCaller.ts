@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { getHeaderConfig } from "@/utils/helper/getHeaderConfig";
+import { logout } from "@/utils/helper/tokens";
 import axios, { AxiosResponse } from "axios"
 
 const baseApiUrl = `https://quran-website-backend.onrender.com/api/v1/`
@@ -36,6 +37,10 @@ export const getCaller = async({
         });
         return {type:"success",response:resposne.data.data}
     } catch (error) {
+        if(error.response.code === 401){
+            logout()
+            return;
+        }
         return {type:"error",message:error.response?.data as errorData}
     }
 }
@@ -53,6 +58,10 @@ export const postCaller = async ({
         });
         return { type: "success", response: res };
     } catch (error) {
+        if(error.response.code === 401){
+            logout()
+            return;
+        }
         return {type:"error",message:error.response?.data as errorData}
     }
 };

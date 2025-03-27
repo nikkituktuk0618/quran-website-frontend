@@ -21,7 +21,8 @@ function AdminLogin() {
         }));
       };
     
-      const handleSubmit = async () => {
+      const handleSubmit = async (e) => {
+        e.preventDefault()
         const payload = {
           email: userData.email,
           password: userData.password,
@@ -32,7 +33,13 @@ function AdminLogin() {
           type: "withoutToken",
         });
         if (response.type === "success") {
-          console.log(response.response);
+          const userData = response.response.data
+          localStorage.setItem("accessToken",userData.token)
+          if(userData?.user?.role === "admin"){
+            route("/admin")
+          }else{
+            route("/login")
+          }
         }
       };
   return (

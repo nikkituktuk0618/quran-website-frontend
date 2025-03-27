@@ -1,6 +1,7 @@
 import Dashboard from "@/components/Admin/Dashboard";
 import { adminPanelNavList } from "@/utils/constant";
-import { ChevronLeft } from "lucide-react";
+import { logout } from "@/utils/helper/tokens";
+import { ChevronLeft, LogOut } from "lucide-react";
 import React, { useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 
@@ -57,8 +58,8 @@ const Admin = () => {
           </div>
         </div>
 
-        <div className="px-2 py-4 border-t font-semibold cursor-pointer">
-          Logout
+        <div onClick={logout} className="px-2 py-4 border-t font-semibold cursor-pointer flex gap-2">
+        <LogOut className="rotate-180"/>Logout
         </div>
       </div>
 

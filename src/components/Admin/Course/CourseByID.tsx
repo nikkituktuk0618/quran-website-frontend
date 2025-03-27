@@ -2,11 +2,11 @@ import { adminplaylists } from "@/utils/constant";
 import { MoreHorizontal, Search, Video } from "lucide-react";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 function CourseByID() {
   const { courseID } = useParams();
-  console.log(courseID)
+  console.log(courseID);
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredPlaylists = adminplaylists.filter(
@@ -25,8 +25,8 @@ function CourseByID() {
     visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
   };
   return (
-    <>
-      <div className="relative my-6">
+    <div className="flex flex-col items-center">
+      <div className="relative my-6 w-[95%]">
         <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
           <Search size={18} className="text-gray-400" />
         </div>
@@ -40,18 +40,24 @@ function CourseByID() {
       </div>
 
       <motion.div
-        className="space-y-4"
-        initial="hidden"
-        animate="visible"
-        variants={listVariants}
+        className="space-y-4 w-[95%]"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{
+          duration: 0.5,
+          ease: "easeOut",
+          staggerChildren: 0.1,
+        }}
       >
-        {filteredPlaylists.map((playlist) => (
+        {filteredPlaylists.map((playlist, index) => (
           <motion.div
             key={playlist.id}
             className="border border-gray-200 rounded-md p-4 hover:shadow-md transition"
-            variants={itemVariants}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: index * 0.1 }}
           >
-            <div className="flex justify-between">
+            <Link to={`/admin/playlist/${index}`}><div className="flex justify-between">
               <div className="flex">
                 <div
                   className={`w-16 h-16 ${playlist.color} flex items-center justify-center rounded-md mr-4 flex-shrink-0`}
@@ -84,10 +90,11 @@ function CourseByID() {
                 </button>
               </div>
             </div>
+            </Link>
           </motion.div>
         ))}
       </motion.div>
-    </>
+    </div>
   );
 }
 

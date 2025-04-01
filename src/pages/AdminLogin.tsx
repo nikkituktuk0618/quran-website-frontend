@@ -33,7 +33,7 @@ function AdminLogin() {
           type: "withoutToken",
         });
         if (response.type === "success") {
-          const userData = response.response.data
+          const userData = response.response
           localStorage.setItem("accessToken",userData.token)
           if(userData?.user?.role === "admin"){
             route("/admin")

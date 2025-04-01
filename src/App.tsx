@@ -73,15 +73,34 @@ const App = () => (
                   <Courses />
                 </ProtectedRoutes>
               }
-            />
-            <Route
-              path="courses/:courseID"
-              element={
-                <ProtectedRoutes>
-                  <CourseByID />
-                </ProtectedRoutes>
-              }
-            />
+            >
+              <Route
+                path=":courseID"
+                element={
+                  <ProtectedRoutes>
+                    <CourseByID />
+                  </ProtectedRoutes>
+                }
+              >
+                <Route
+                  path="playlist/:playlistID"
+                  element={
+                    <ProtectedRoutes>
+                      <PlaylistByID />
+                    </ProtectedRoutes>
+                  }
+                >
+                  <Route
+                    path="video/:videoID"
+                    element={
+                      <ProtectedRoutes>
+                        <VideoByID />
+                      </ProtectedRoutes>
+                    }
+                  />
+                </Route>
+              </Route>
+            </Route>
             <Route
               path="video"
               element={

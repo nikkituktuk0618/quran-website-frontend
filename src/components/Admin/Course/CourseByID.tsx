@@ -1,13 +1,19 @@
 import { adminplaylists } from "@/utils/constant";
 import { MoreHorizontal, Search, Video } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Link, useParams } from "react-router-dom";
+import { Link, Outlet, useParams } from "react-router-dom";
 
 function CourseByID() {
-  const { courseID } = useParams();
-  console.log(courseID);
+  const { playlistID } = useParams();
   const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(()=>{
+    if(playlistID){
+      console.log(playlistID);
+      // api call for courses
+    }
+  },[playlistID])
 
   const filteredPlaylists = adminplaylists.filter(
     (playlist) =>
@@ -24,6 +30,11 @@ function CourseByID() {
     hidden: { opacity: 0, y: 10 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
   };
+
+  if(playlistID){
+    return <Outlet/>
+  }
+
   return (
     <div className="flex flex-col items-center">
       <div className="relative my-6 w-[95%]">
@@ -57,7 +68,7 @@ function CourseByID() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: index * 0.1 }}
           >
-            <Link to={`/admin/playlist/${index}`}><div className="flex justify-between">
+            <Link to={`playlist/${index}`}><div className="flex justify-between">
               <div className="flex">
                 <div
                   className={`w-16 h-16 ${playlist.color} flex items-center justify-center rounded-md mr-4 flex-shrink-0`}

@@ -3,9 +3,40 @@ import CardList from "../common/CardList";
 import { useState } from "react";
 import CreateCourse from "./Course/CreateCourses";
 import { motion } from "framer-motion";
+import { Outlet, useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { getCaller } from "@/lib/apiCaller";
+
+const getAllCourses = async() =>{
+  const res = await getCaller({
+    url:"courses"
+  })
+  if(res.type === "success"){
+    return res.response
+  }
+  return [];
+}
 
 function Courses() {
+  const { courseID } = useParams();
   const [createCourses, setCreateCourses] = useState(false);
+  const {data:courses,isLoading,error} = useQuery({
+    queryKey:["courses"],
+    queryFn:getAllCourses
+   })
+
+  if(courseID){
+    return <Outlet/>
+  }
+
+  if (isLoading) {
+    return <div>Loading courses...</div>;
+  }
+
+  // Error state
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
 
   return (
     <div className="w-full pt-10 h-[calc(100%-50px)] flex justify-center ">
@@ -33,7 +64,7 @@ function Courses() {
               staggerChildren: 0.1,
             }}
           >
-            {coursesdata.map((item, index) => (
+            {courses?.map((item, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 10 }}
@@ -41,15 +72,14 @@ function Courses() {
                 transition={{ duration: 0.4, delay: index * 0.1 }}
               >
                 <CardList
-                  key={index}
-                  id={index}
+                  id={item.id}
                   content={item.content}
-                  creator={item.creator}
-                  rate={item.rate}
+                  creator={"Admin"}
+                  rate={item.fee_amount}
                   lessons={item.lessons}
-                  rating={item.rating}
-                  name={item.name}
-                  icon={item.icon}
+                  rating={4.5}
+                  name={item.title}
+                  icon={"/what_drives_me.png"}
                 />
               </motion.div>
             ))}

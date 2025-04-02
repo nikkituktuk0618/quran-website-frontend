@@ -1,130 +1,249 @@
-import { videos } from "@/utils/constant";
-import { Clock, Edit, MoreHorizontal, Play, Search } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import { Modal } from "antd";
+import { useEffect, useState } from "react";
+import {
+  Clock,
+  Edit,
+  MoreHorizontal,
+  Play,
+  Plus,
+  Search,
+  Trash2,
+} from "lucide-react";
 import { motion } from "framer-motion";
-import { Link, Outlet, useParams } from "react-router-dom";
+import { Link, Outlet, useNavigate, useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { getCaller, deleteCaller } from "@/lib/apiCaller";
+import Loading from "@/components/common/Loading";
+import CreateVideo from "../Videos/CreateVideos";
+import useNotification from "@/hooks/useNotification";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+
+const getAllCourses = async (id) => {
+  const res = await getCaller({
+    url: `videos/playlist/${id}`,
+  });
+  return res.type === "success" ? res.response : [];
+};
 
 function PlaylistByID() {
-  const { videoID } = useParams();
+  const { playlistID, videoID } = useParams();
   const [searchQuery, setSearchQuery] = useState("");
+  const [createVideo, setCreateVideo] = useState(false);
+  const { contextHolder, showNotification } = useNotification();
+  const navigate = useNavigate();
+  const {
+    data: video,
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryKey: ["playlist", playlistID],
+    queryFn: () => getAllCourses(playlistID!),
+    enabled: !!playlistID,
+  });
+
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [deletingVideoID, setDeletingVideoID] = useState(null);
 
   useEffect(()=>{
-    if(videoID){
-      console.log(videoID)
-      //api call
-    }
-  },[videoID])
+    refetch();
+  },[createVideo])
 
-  const filteredVideos = videos.filter(
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  const filteredVideos = video?.videos?.filter(
     (video) =>
       video.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       video.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
-  const listVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { staggerChildren: 0.1 } },
+
+  const showDeleteModal = (id) => {
+    setDeletingVideoID(id);
+    setDeleteModalVisible(true);
   };
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 10 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+  // Delete Video if Confirmed
+  const handleDelete = async () => {
+    if (!deletingVideoID) return;
+
+    const res = await deleteCaller({ url: `videos/${deletingVideoID}` });
+
+    if (res.type === "success") {
+      showNotification("success", "Success", "Video deleted successfully");
+      refetch();
+    } else {
+      showNotification("error", "Failed", "Failed to delete video");
+    }
+
+    setDeleteModalVisible(false);
+    setDeletingVideoID(null);
   };
 
-  if(videoID){
-    return <Outlet/>
+  const handleEdit = () => {
+    setCreateVideo(true);
+  };
+
+  if (videoID) {
+    return <Outlet />;
   }
 
   return (
-    <div className="flex flex-col items-center">
-      <div className="relative my-6 w-[95%]">
-        <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-          <Search size={18} className="text-gray-400" />
-        </div>
-        <input
-          type="text"
-          placeholder="Search videos..."
-          className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-      </div>
+    <div className="w-full pt-10 h-[calc(100%-50px)]">
+      {contextHolder}
 
-      <motion.div
-        className="space-y-4 w-[95%]"
-        initial="hidden"
-        animate="visible"
-        variants={listVariants}
+      {/* Delete Confirmation Modal */}
+      <Modal
+        title="Confirm Deletion"
+        open={deleteModalVisible}
+        onOk={handleDelete}
+        onCancel={() => setDeleteModalVisible(false)}
+        okText="Delete"
+        cancelText="Cancel"
+        okButtonProps={{ danger: true }}
       >
-        {filteredVideos.map((video,index) => (
-          <motion.div
-            key={video.id}
-            className="border border-gray-200 rounded-md p-4 hover:shadow-md transition"
-            variants={itemVariants}
-          >
-            <Link to={`video/${index}`}>
-              <div className="flex justify-between flex-col md:flex-row">
-                <div className="flex flex-col md:flex-row">
-                  <div className="relative w-32 h-24 bg-gray-200 rounded-md mr-4 flex-shrink-0 overflow-hidden">
-                    <img
-                      src={video.thumbnail}
-                      alt={video.title}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="bg-black bg-opacity-40 rounded-full p-2">
-                        <Play size={20} className="text-white" fill="white" />
+        <p>
+          Are you sure you want to delete this video? This action cannot be
+          undone.
+        </p>
+      </Modal>
+
+      <section className="w-full flex flex-col gap-5 items-center">
+        <div className="w-[95%] bg-white">
+          <div className="flex justify-between items-center mb-2">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">All Videos</h1>
+              <p className="text-gray-500">
+                View and manage all videos across playlists
+              </p>
+            </div>
+            <div className="flex gap-3">
+              {!createVideo && (
+                <button
+                  onClick={() => navigate(-1)}
+                  className="flex items-center gap-2 border hover:bg-gray-100  px-4 py-2 rounded-lg transition"
+                >
+                  Back
+                </button>
+              )}
+              <button
+                onClick={() => setCreateVideo(!createVideo)}
+                className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition"
+              >
+                {!createVideo && <Plus size={20} />}
+                <span>{createVideo ? "Go Back" : "Create Video"}</span>
+              </button>
+            </div>
+          </div>
+
+          {createVideo ? (
+            <CreateVideo close={setCreateVideo} />
+          ) : (
+            <>
+              <div className="relative my-6">
+                <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                  <Search size={18} className="text-gray-400" />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search videos..."
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.5,
+                  ease: "easeOut",
+                  staggerChildren: 0.1,
+                }}
+                className="grid gap-6 w-[95%] md:grid-cols-2 lg:grid-cols-3"
+              >
+                {filteredVideos.map((video, index) => (
+                  <motion.div
+                    key={video.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: index * 0.1 }}
+                    className="border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-lg transition bg-white"
+                  >
+                    <div className="flex flex-col gap-4">
+                      {/* Thumbnail */}
+                      <div className="relative w-36 h-24 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
+                        <img
+                          src={"/what_drives_me.png"}
+                          alt={video.title}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="bg-black bg-opacity-50 rounded-full p-2">
+                            <Play
+                              size={20}
+                              className="text-white"
+                              fill="white"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Video Info */}
+                      <div className="flex flex-col justify-between w-full">
+                        <h3 className="text-lg font-semibold text-gray-900 truncate">
+                          {video.title}
+                        </h3>
+
+                        <div className="flex items-center justify-between mt-3">
+                          {/* Options */}
+                          <Popover>
+                            <PopoverTrigger asChild>
+                            <button className="p-2 rounded-full bg-gray-100 hover:bg-gray-200">
+                              <MoreHorizontal
+                                size={20}
+                                className="text-gray-500"
+                              />
+                            </button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-36 bg-white border border-gray-300 rounded-lg shadow-lg z-10">
+                              <button
+                                onClick={() => handleEdit()}
+                                className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700"
+                              >
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => showDeleteModal(video.id)}
+                                className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
+                              >
+                                Delete
+                              </button>
+                            </PopoverContent>
+                          </Popover>
+
+                          {/* Preview Button */}
+                          <Link to={`video/${video.id}`}>
+                            <button className="flex items-center gap-2 px-4 py-1.5 border border-gray-300 rounded-lg hover:bg-gray-50">
+                              <Play size={16} />
+                              <span>Preview</span>
+                            </button>
+                          </Link>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="flex flex-col justify-center">
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-lg font-medium text-gray-900">
-                        {video.title}
-                      </h3>
-                    </div>
-
-                    <div className="flex items-center gap-2 mb-1">
-                      <span
-                        className={`px-2 py-0.5 text-xs rounded-full ${
-                          video.status === "Published"
-                            ? "bg-green-100 text-green-800"
-                            : "bg-yellow-100 text-yellow-800"
-                        }`}
-                      >
-                        {video.status}
-                      </span>
-                    </div>
-
-                    <p className="text-gray-500">{video.description}</p>
-
-                    <div className="flex items-center mt-2 text-sm text-gray-500">
-                      <Clock size={14} className="mr-1" />
-                      <span>{video.duration}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex flex-col items-end justify-between">
-                  <button className="p-1 rounded-full hover:bg-gray-100">
-                    <MoreHorizontal size={20} className="text-gray-500" />
-                  </button>
-
-                  <div className="flex gap-2 mt-6">
-                    <button className="flex items-center gap-1 px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50">
-                      <Play size={16} />
-                      <span>Preview</span>
-                    </button>
-                    <button className="flex items-center gap-1 px-3 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-                      <Edit size={16} />
-                      <span>Edit</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </Link>
-          </motion.div>
-        ))}
-      </motion.div>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </>
+          )}
+        </div>
+      </section>
     </div>
   );
 }

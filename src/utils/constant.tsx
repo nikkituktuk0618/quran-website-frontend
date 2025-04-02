@@ -12,12 +12,12 @@ export const adminPanelNavList = [
         link:"courses"
     },
     {
-        name:"My Playlist",
-        link:"playlist"
+        name:"Create Playlist",
+        link:"createplaylist"
     },
     {
-        name:"My Videos",
-        link:"video"
+        name:"Create Videos",
+        link:"createvideo"
     }
 ]
 

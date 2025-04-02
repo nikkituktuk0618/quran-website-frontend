@@ -1,30 +1,76 @@
+import useNotification from "@/hooks/useNotification";
+import { getCaller, postCaller } from "@/lib/apiCaller";
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
-const CreateVideo = ({close}) => {
+const getAllCourses = async() =>{
+  const res = await getCaller({
+    url:"courses"
+  })
+  if(res.type === "success"){
+    return res.response
+  }
+  return [];
+}
+
+const getPlaylistsByCourse = async (courseId: number) => {
+  if (!courseId) return []; // Prevent fetching if no course is selected
+  const res = await getCaller({ url: `playlists/course/${courseId}` });
+  return res.type === "success" ? res.response : [];
+};
+
+const CreateVideo = ({close}:{close?:(val:boolean)=>void}) => {
+  const { data: courses, isLoading: coursesLoading } = useQuery({
+    queryKey: ["courses"],
+    queryFn: getAllCourses,
+  });
+  const [selectedCourseId, setSelectedCourseId] = useState<number | null>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [course, setCourse] = useState("");
-  const [playlist, setPlaylist] = useState("");
-  const [thumbnailUrl, setThumbnailUrl] = useState("");
+  const [playlist, setPlaylist] = useState<number | null>(null);
   const [videoUrl, setVideoUrl] = useState("");
   const [duration, setDuration] = useState("00:00");
-  const [isPublished, setIsPublished] = useState(false);
+  const {contextHolder,showNotification} = useNotification();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Fetch playlists based on selected course
+  const { data: playlists = [] } = useQuery({
+    queryKey: ["playlists", selectedCourseId],
+    queryFn: () => getPlaylistsByCourse(selectedCourseId!),
+    enabled: !!selectedCourseId, // Fetch only when a course is selected
+  });
+
+  const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
-    console.log({
-      title,
-      description,
-      course,
-      playlist,
-      thumbnailUrl,
-      videoUrl,
-      duration,
-      isPublished,
-    });
+    const payload = {
+          title: title,
+          playlist_id: playlist,
+          video_url: videoUrl,
+          video_order: duration,
+        };
+        const res = await postCaller({
+          url: "videos",
+          payload: payload,
+        });
+        if (res.type === "success") {
+          showNotification(
+            "success",
+            "Success",
+            "Course created successfully"
+          )
+          
+        }else{
+          showNotification(
+            "error",
+            "Failed",
+            "Failed to create course"
+          )
+        }
   };
 
   return (
+    <>
+    {contextHolder}
+    
     <div className="w-full p-6 rounded-lg bg-gray-50">
       <h2 className="text-2xl font-semibold">Create Video</h2>
       <p className="text-gray-600 mb-4">Add a new video to your playlist</p>
@@ -57,12 +103,14 @@ const CreateVideo = ({close}) => {
             <label className="block text-sm font-medium">Course</label>
             <select
               className="w-full mt-1 p-2 border rounded-md"
-              value={course}
-              onChange={(e) => setCourse(e.target.value)}
+              onChange={(e) => setSelectedCourseId(Number(e.target.value))}
             >
-              <option value="">Select a course</option>
-              <option value="course1">Course 1</option>
-              <option value="course2">Course 2</option>
+              <option value="">Select Course</option>
+              {
+                courses?.map((item)=>(
+                  <option value={item.id}>{item.title}</option>
+                ))
+              }
             </select>
           </div>
 
@@ -70,17 +118,19 @@ const CreateVideo = ({close}) => {
             <label className="block text-sm font-medium">Playlist</label>
             <select
               className="w-full mt-1 p-2 border rounded-md"
-              value={playlist}
-              onChange={(e) => setPlaylist(e.target.value)}
+              onChange={(e) => setPlaylist(Number(e.target.value))}
             >
-              <option value="">Select a playlist</option>
-              <option value="playlist1">Playlist 1</option>
-              <option value="playlist2">Playlist 2</option>
+              <option value="">Select Playlist</option>
+              {
+                playlists?.playlists?.map((item)=>(
+                  <option value={item.id}>{item.title}</option>
+                ))
+              }
             </select>
           </div>
         </div>
 
-        <div>
+        {/* <div>
           <label className="block text-sm font-medium">Thumbnail URL</label>
           <input
             type="text"
@@ -89,7 +139,7 @@ const CreateVideo = ({close}) => {
             value={thumbnailUrl}
             onChange={(e) => setThumbnailUrl(e.target.value)}
           />
-        </div>
+        </div> */}
 
         <div>
           <label className="block text-sm font-medium">Video URL</label>
@@ -103,16 +153,16 @@ const CreateVideo = ({close}) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium">Duration</label>
+          <label className="block text-sm font-medium">Order number</label>
           <input
-            type="time"
+            type="number"
             className="w-full mt-1 p-2 border rounded-md"
             value={duration}
             onChange={(e) => setDuration(e.target.value)}
           />
         </div>
 
-        <div className="flex items-center gap-2">
+        {/* <div className="flex items-center gap-2">
           <input
             type="checkbox"
             className="h-5 w-5"
@@ -120,12 +170,12 @@ const CreateVideo = ({close}) => {
             onChange={(e) => setIsPublished(e.target.checked)}
           />
           <label className="text-sm font-medium">Publish Video</label>
-        </div>
+        </div> */}
 
         <div className="flex justify-end space-x-3">
-          <button type="button" onClick={()=>close(false)} className="px-4 py-2 border rounded-md">
+          {close && <button type="button" onClick={()=>close(false)} className="px-4 py-2 border rounded-md">
             Cancel
-          </button>
+          </button>}
           <button
             type="submit"
             className="px-4 py-2 bg-blue-600 text-white rounded-md"
@@ -135,6 +185,7 @@ const CreateVideo = ({close}) => {
         </div>
       </form>
     </div>
+    </>
   );
 };
 

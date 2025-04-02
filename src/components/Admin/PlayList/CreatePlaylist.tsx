@@ -1,7 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import Loading from "@/components/common/Loading";
 import useNotification from "@/hooks/useNotification";
 import { getCaller, postCaller } from "@/lib/apiCaller";
 import { useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 const getAllCourses = async() =>{
   const res = await getCaller({
@@ -13,8 +16,8 @@ const getAllCourses = async() =>{
   return [];
 }
 
-const CreatePlaylist = ({ close }) => {
-  const {data:courses,isLoading,error} = useQuery({
+const CreatePlaylist = ({close,updateID}:{close?:(val:boolean)=>void,updateID?:number}) => {
+  const {data:courses} = useQuery({
     queryKey:["courses"],
     queryFn:getAllCourses
    })
@@ -26,20 +29,9 @@ const CreatePlaylist = ({ close }) => {
     thumbnail_url: "",
   });
 
-  
   const {contextHolder,showNotification} = useNotification();
 
-  useEffect(() => {
-    if (courses && courses.length > 0 && formData.course_id === 0) {
-      setFormData((prev) => ({
-        ...prev,
-        course_id: courses[0].id, // Set first course as default
-      }));
-    }
-  }, [courses]);
-
   const handleChange = (e, key) => {
-    console.log(e.target.value)
     const value = key === "playlist_order" ? Number(e.target.value) : e.target.value;
     setFormData((prev) => ({
       ...prev,
@@ -64,7 +56,6 @@ const CreatePlaylist = ({ close }) => {
         "Success",
         "Course created successfully"
       )
-      
     }else{
       showNotification(
         "error",
@@ -114,6 +105,7 @@ const CreatePlaylist = ({ close }) => {
             value={formData.course_id}
             onChange={(e) => handleChange(e, "course_id")}
           >
+            <option  value="">Select Course</option>
             {
               courses?.map((item,index)=>(
                 <option key={index} value={item.id}>{item.title}</option>
@@ -145,13 +137,13 @@ const CreatePlaylist = ({ close }) => {
           <p className="text-gray-500 text-sm">The URL for the playlist thumbnail image.</p>
         </div>
         <div className="flex items-end justify-end space-x-4">
-          <button
+          {close && <button
             type="button"
             className="px-4 py-2 border rounded-md text-gray-700 hover:bg-gray-100"
             onClick={() => close(false)}
           >
             Cancel
-          </button>
+          </button>}
           <button
             type="submit"
             className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"

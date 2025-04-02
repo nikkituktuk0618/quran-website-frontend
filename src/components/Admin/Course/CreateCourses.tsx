@@ -115,17 +115,6 @@ const CreateCourse = ({ setCreateCourses }) => {
             <option value="one-time">One-Time</option>
           </select>
         </div>
-        {/* <div>
-          <label className="block text-gray-700 font-medium">Thumbnail URL</label>
-          <input
-            type="text"
-            placeholder="https://example.com/image.jpg"
-            className="w-full mt-1 p-2 border rounded-md focus:ring focus:ring-blue-300"
-          />
-          <p className="text-gray-500 text-sm">
-            URL to an image that represents your course (optional).
-          </p>
-        </div> */}
         <div className="flex items-end justify-end space-x-4">
           <button
             type="button"

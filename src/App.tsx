@@ -18,6 +18,8 @@ import Courses from "./components/Admin/Courses";
 import PlaylistByID from "./components/Admin/PlayList/PlaylistByID";
 import CourseByID from "./components/Admin/Course/CourseByID";
 import VideoByID from "./components/Admin/Videos/VideoByID";
+import CreateVideo from "./components/Admin/Videos/CreateVideos";
+import CreatePlaylist from "./components/Admin/PlayList/CreatePlaylist";
 
 const queryClient = new QueryClient();
 
@@ -51,10 +53,10 @@ const App = () => (
               }
             />
             <Route
-              path="playlist"
+              path="createplaylist"
               element={
                 <ProtectedRoutes>
-                  <Playlists />
+                  <CreatePlaylist/>
                 </ProtectedRoutes>
               }
             />
@@ -102,10 +104,10 @@ const App = () => (
               </Route>
             </Route>
             <Route
-              path="video"
+              path="createvideo"
               element={
                 <ProtectedRoutes>
-                  <Videos />
+                  <CreateVideo/>
                 </ProtectedRoutes>
               }
             />

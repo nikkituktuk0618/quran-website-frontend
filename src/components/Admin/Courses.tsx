@@ -6,6 +6,8 @@ import { motion } from "framer-motion";
 import { Outlet, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getCaller } from "@/lib/apiCaller";
+import Loading from "../common/Loading";
+import { Empty } from "antd";
 
 const getAllCourses = async() =>{
   const res = await getCaller({
@@ -24,18 +26,18 @@ function Courses() {
     queryKey:["courses"],
     queryFn:getAllCourses
    })
-
+   
   if(courseID){
     return <Outlet/>
   }
 
   if (isLoading) {
-    return <div>Loading courses...</div>;
+    return <Loading/>
   }
 
   // Error state
   if (error) {
-    return <div>Error: {error.message}</div>;
+    return <div className="h-full w-full"><Empty/></div>;
   }
 
   return (
@@ -55,7 +57,7 @@ function Courses() {
           <CreateCourse setCreateCourses={setCreateCourses} />
         ) : (
           <motion.div
-            className="flex justify-center flex-wrap gap-2 md:gap-8"
+            className="flex justify-center md:justify-start flex-wrap gap-2 md:gap-8"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{

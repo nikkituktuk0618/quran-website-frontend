@@ -1,6 +1,7 @@
 import NotFound from '@/pages/NotFound'
 import { decodeToken } from '@/utils/helper/tokens'
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 function ProtectedRoutes({children}) {
   const [loading,setLoading] = useState({
@@ -8,19 +9,15 @@ function ProtectedRoutes({children}) {
     unautherized:false
   })
 
+  const navigate = useNavigate();
+
   useEffect(()=>{
     authenticateUser()
   },[])
 
   const authenticateUser = () =>{
     const decodedToken = decodeToken()
-    if(!decodedToken){
-      setLoading({
-        loading:false,
-        unautherized:true
-      })
-    }
-    else if(decodedToken?.role === "admin"){
+    if(decodedToken?.role === "admin"){
       setLoading({
         loading:false,
         unautherized:false
@@ -30,13 +27,14 @@ function ProtectedRoutes({children}) {
         loading:false,
         unautherized:true
       })
+      navigate("/dailyquran/admin/login")
     }
   }
 
   
   return (
     <div className='h-full'>
-      {loading.loading ? <div className='h-screen w-screen flex items-center justify-center'>loading...</div>: loading.unautherized ? <NotFound/> : children}
+      {loading.loading ? <div className='h-screen w-screen flex items-center justify-center'>loading...</div>: loading.unautherized ? "loading..." : children}
     </div>
   )
 }

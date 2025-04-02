@@ -1,100 +1,213 @@
-import { adminplaylists } from "@/utils/constant";
-import { MoreHorizontal, Search, Video } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { MoreHorizontal, Plus, Search, Video } from "lucide-react";
 import { motion } from "framer-motion";
-import { Link, useParams } from "react-router-dom";
+import { Link, Outlet, useNavigate, useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { deleteCaller, getCaller } from "@/lib/apiCaller";
+import Loading from "@/components/common/Loading";
+import CreatePlaylist from "../PlayList/CreatePlaylist";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import useNotification from "@/hooks/useNotification";
+import { Modal } from "antd";
+
+const getAllCourses = async (id) => {
+  const res = await getCaller({ url: `courses/${id}` });
+  return res.type === "success" ? res.response : [];
+};
 
 function CourseByID() {
-  const { courseID } = useParams();
-  console.log(courseID);
+  const { courseID, playlistID } = useParams();
   const [searchQuery, setSearchQuery] = useState("");
+  const [createPlaylist, setCreatePlaylist] = useState(false);
+  const { contextHolder, showNotification } = useNotification();
+  const navigate = useNavigate();
+  const {
+    data: playlist,
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryKey: ["courses", courseID],
+    queryFn: () => getAllCourses(courseID!),
+    enabled: !!courseID,
+  });
 
-  const filteredPlaylists = adminplaylists.filter(
-    (playlist) =>
-      playlist.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      playlist.description.toLowerCase().includes(searchQuery.toLowerCase())
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [deletingPlaylistID, setDeletingPlaylistID] = useState(null);
+
+  useEffect(()=>{
+    refetch()
+  },[createPlaylist])
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  const filteredPlaylists = playlist?.playlists?.filter((playlist) =>
+    playlist.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const listVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { staggerChildren: 0.1 } },
+  if (playlistID) {
+    return <Outlet />;
+  }
+
+  // Open the delete confirmation modal
+  const showDeleteModal = (id) => {
+    setDeletingPlaylistID(id);
+    setDeleteModalVisible(true);
   };
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 10 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+  // Perform deletion if confirmed
+  const handleDelete = async () => {
+    if (!deletingPlaylistID) return;
+
+    const res = await deleteCaller({ url: `playlists/${deletingPlaylistID}` });
+
+    if (res.type === "success") {
+      showNotification("success", "Success", "Playlist deleted successfully");
+      refetch();
+    } else {
+      showNotification("error", "Failed", "Failed to delete playlist");
+    }
+
+    setDeleteModalVisible(false);
+    setDeletingPlaylistID(null);
   };
+
+  const handleEdit = () => {
+    setCreatePlaylist(true);
+  };
+
   return (
-    <div className="flex flex-col items-center">
-      <div className="relative my-6 w-[95%]">
-        <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-          <Search size={18} className="text-gray-400" />
-        </div>
-        <input
-          type="text"
-          placeholder="Search playlists..."
-          className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-      </div>
-
-      <motion.div
-        className="space-y-4 w-[95%]"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{
-          duration: 0.5,
-          ease: "easeOut",
-          staggerChildren: 0.1,
-        }}
+    <>
+      {contextHolder}
+      <Modal
+        title="Confirm Deletion"
+        open={deleteModalVisible}
+        onOk={handleDelete}
+        onCancel={() => setDeleteModalVisible(false)}
+        okText="Delete"
+        cancelText="Cancel"
+        okButtonProps={{ danger: true }}
       >
-        {filteredPlaylists.map((playlist, index) => (
-          <motion.div
-            key={playlist.id}
-            className="border border-gray-200 rounded-md p-4 hover:shadow-md transition"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: index * 0.1 }}
-          >
-            <Link to={`/admin/playlist/${index}`}><div className="flex justify-between">
-              <div className="flex">
-                <div
-                  className={`w-16 h-16 ${playlist.color} flex items-center justify-center rounded-md mr-4 flex-shrink-0`}
+        <p>
+          Are you sure you want to delete this playlist? This action cannot be
+          undone.
+        </p>
+      </Modal>
+
+      <div className="w-full pt-10 h-[calc(100%-50px)]">
+        <section className="w-full flex flex-col gap-5 items-center">
+          <div className="w-[95%] bg-white">
+            <div className="flex justify-between items-center mb-2">
+              <h1 className="text-2xl font-bold text-gray-900">Playlists</h1>
+              <div className="flex gap-2">
+                {!createPlaylist && (
+                  <button
+                    onClick={() => navigate(-1)}
+                    className="flex items-center gap-2 border hover:bg-gray-100  px-4 py-2 rounded-lg transition"
+                  >
+                    Back
+                  </button>
+                )}
+                <button
+                  onClick={() => setCreatePlaylist(!createPlaylist)}
+                  className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition"
                 >
-                  <img
-                    src={playlist.icon}
-                    alt={playlist.title}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="flex flex-col justify-center">
-                  <h3 className="text-lg font-medium text-gray-900">
-                    {playlist.title}
-                  </h3>
-                  <p className="text-gray-500">{playlist.description}</p>
-                  <div className="flex items-center mt-2 space-x-4 text-sm text-gray-500">
-                    <div className="flex items-center gap-1">
-                      <Video size={16} />
-                      <span>{playlist.videos} Videos</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <span>{playlist.duration}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div>
-                <button className="p-1 rounded-full hover:bg-gray-100">
-                  <MoreHorizontal size={20} className="text-gray-500" />
+                  {createPlaylist ? "Go Back" : "Create Playlist"}
                 </button>
               </div>
             </div>
-            </Link>
-          </motion.div>
-        ))}
-      </motion.div>
-    </div>
+
+            {createPlaylist ? (
+              <CreatePlaylist close={setCreatePlaylist} />
+            ) : (
+              <>
+                <div className="relative my-6">
+                  <input
+                    type="text"
+                    placeholder="Search playlists..."
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.5,
+                    ease: "easeOut",
+                    staggerChildren: 0.1,
+                  }}
+                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-[95%]"
+                >
+                  {filteredPlaylists?.map((playlist, index) => (
+                    <motion.div
+                      key={playlist.id}
+                      className="bg-white shadow-lg border border-gray-200 rounded-xl p-2 transition hover:shadow-xl relative"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: index * 0.1 }}
+                    >
+                      <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-4">
+                          <img
+                            src={"/what_drives_me.png"}
+                            alt={playlist.title}
+                            className="w-20 h-20 rounded-lg object-cover shadow-md"
+                          />
+                          <h3 className="text-lg font-semibold text-gray-900 truncate max-w-[150px]">
+                            {playlist.title}
+                          </h3>
+                        </div>
+                        
+                      </div>
+                      <div className="mt-4 flex justify-between items-center">
+                        <Link
+                          to={`playlist/${playlist.id}`}
+                          className="text-sm bg-blue-500 text-white px-4 py-1 rounded-lg hover:bg-blue-600"
+                        >
+                          View Playlist
+                        </Link>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <button className="p-2 rounded-full bg-gray-100 hover:bg-gray-200">
+                              <MoreHorizontal
+                                size={20}
+                                className="text-gray-500"
+                              />
+                            </button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-32 bg-white border border-gray-300 rounded-md shadow-md z-10">
+                            <button
+                              onClick={() => handleEdit()}
+                              className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => showDeleteModal(playlist.id)}
+                              className="w-full text-left px-4 py-2 hover:bg-red-100 text-red-600"
+                            >
+                              Delete
+                            </button>
+                          </PopoverContent>
+                        </Popover>
+                      </div>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              </>
+            )}
+          </div>
+        </section>
+      </div>
+    </>
   );
 }
 

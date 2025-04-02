@@ -4,8 +4,24 @@ import { useState } from "react";
 import CreatePlaylist from "./PlayList/CreatePlaylist";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { getCaller } from "@/lib/apiCaller";
+import { useQuery } from "@tanstack/react-query";
+
+const getAllCourses = async() =>{
+  const res = await getCaller({
+    url:"playlists"
+  })
+  if(res.type === "success"){
+    return res.response
+  }
+  return [];
+}
 
 function Playlists() {
+  const {data:playlist,isLoading,error} = useQuery({
+    queryKey:["playlists"],
+    queryFn:getAllCourses
+   })
   const [searchQuery, setSearchQuery] = useState("");
   const [createPlaylist, setCreatePlaylist] = useState(false);
 

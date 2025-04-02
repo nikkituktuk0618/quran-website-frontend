@@ -7,10 +7,9 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { Link } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 
 export default function CardList({
-  key,
   name,
   rate,
   lessons,
@@ -18,14 +17,14 @@ export default function CardList({
   rating,
   content,
   icon,
-  id
+  id,
 }) {
   return (
-      <Card key={key} className="md:w-64 w-[180px] p-4">
+      <Card  className="md:w-64 w-[180px] p-4">
         <CardContent className="flex flex-col gap-1.5">
           {/* Placeholder for Image or Thumbnail */}
           {/* <div className="h-[150px] w-full bg-black rounded-lg"></div> */}
-          <img src={icon} alt="" className="h-[150px] w-full rounded-lg"/>
+          <img src={icon} alt="" className="h-[150px] w-full rounded-lg" />
           {/* Course Details */}
           <div className="flex justify-between items-center">
             <span className="text-sm">{name}</span>
@@ -43,9 +42,10 @@ export default function CardList({
         {/* Footer Section */}
         <CardFooter className="flex justify-between">
           <span className="text-sm">{content} content</span>
-          <Link to={`${id}`}><span className="text-sm bg-[#DEC88E] px-2 py-0.5 rounded-full cursor-pointer">
-            View All
-          </span>
+          <Link to={`/admin/courses/${id}`}>
+            <span className="text-sm bg-[#DEC88E] px-2 py-0.5 rounded-full cursor-pointer">
+              View All
+            </span>
           </Link>
         </CardFooter>
       </Card>

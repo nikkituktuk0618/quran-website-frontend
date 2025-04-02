@@ -1,9 +1,29 @@
-import React from 'react'
-import CustomTable from '../common/Table'
-import { adminDashboardCardn } from '@/utils/constant'
-import Card from '../common/Card'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useEffect, useState } from "react";
+import CustomTable from "../common/Table";
+import { adminDashboardCardn } from "@/utils/constant";
+import Card from "../common/Card";
+import { getCaller } from "@/lib/apiCaller";
 
 export default function Students() {
+  const [data, setData] = useState<any>([]);
+  useEffect(() => {
+    fetchAllUser();
+  }, []);
+
+  const fetchAllUser = async () => {
+    const response = await getCaller({
+      url: "users",
+    });
+    if (response.type === "success") {
+      const filteredData = response.response.map(
+        ({ password, ...rest }) => rest
+      );
+      setData(filteredData);
+    } else {
+      console.log("fail to fetch users");
+    }
+  };
   return (
     <div className="w-full pt-10 h-[calc(100%-50px)]">
       <section className="w-full flex flex-col gap-5 items-center">
@@ -20,9 +40,11 @@ export default function Students() {
           ))}
         </div>
         <div className="w-full flex justify-center">
-          <div className="w-[90%]"><CustomTable/></div>
+          <div className="w-[90%]">
+            <CustomTable data={data} />
+          </div>
         </div>
       </section>
     </div>
-  )
+  );
 }

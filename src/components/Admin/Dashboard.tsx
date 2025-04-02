@@ -1,10 +1,31 @@
-import React from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useEffect, useState } from "react";
 import Card from "../common/Card";
 import { adminCapsuleList, adminDashboardCardn } from "@/utils/constant";
 import CustomTable from "../common/Table";
 import Capsule from "../common/Capsule";
+import { getCaller } from "@/lib/apiCaller";
 
 function Dashboard() {
+  const [data, setData] = useState<any>([]);
+  useEffect(() => {
+    fetchAllUser();
+  }, []);
+
+  const fetchAllUser = async () => {
+    const response = await getCaller({
+      url: "users",
+    });
+    if (response.type === "success") {
+      const filteredData = response.response.map(
+        ({ password, ...rest }) => rest
+      );
+      setData(filteredData);
+    } else {
+      console.log("fail to fetch users");
+    }
+  };
+
   return (
     <div className="w-full pt-10 h-[calc(100%-50px)]">
       <section className="w-full flex flex-col gap-5 items-center ">
@@ -21,10 +42,14 @@ function Dashboard() {
           ))}
         </div>
         <div className="py-5 w-full flex justify-center">
-         <div className="w-[95%]"><Capsule data={adminCapsuleList}/></div> 
+          <div className="w-[95%]">
+            <Capsule data={adminCapsuleList} />
+          </div>
         </div>
         <div className="w-full flex justify-center">
-          <div className="w-[95%]"><CustomTable/></div>
+          <div className="w-[95%] overflow-auto">
+            <CustomTable data={data} />
+          </div>
         </div>
       </section>
     </div>

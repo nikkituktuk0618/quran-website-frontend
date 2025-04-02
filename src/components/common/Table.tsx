@@ -1,47 +1,21 @@
-import React, { useRef, useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useEffect, useRef, useState } from "react";
 import { SearchOutlined } from "@ant-design/icons";
 import type { InputRef, TableColumnsType, TableColumnType } from "antd";
 import { Button, Input, Space, Table } from "antd";
 import type { FilterDropdownProps } from "antd/es/table/interface";
 import Highlighter from "react-highlight-words";
 
-interface DataType {
+interface GenericDataType {
   key: string;
-  name: string;
-  age: number;
-  address: string;
+  [key: string]: any;
 }
 
-type DataIndex = keyof DataType;
+interface CustomTableProps {
+  data: GenericDataType[];
+}
 
-const data: DataType[] = [
-  {
-    key: "1",
-    name: "John Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park",
-  },
-  {
-    key: "2",
-    name: "Joe Black",
-    age: 42,
-    address: "London No. 1 Lake Park",
-  },
-  {
-    key: "3",
-    name: "Jim Green",
-    age: 32,
-    address: "Sydney No. 1 Lake Park",
-  },
-  {
-    key: "4",
-    name: "Jim Red",
-    age: 32,
-    address: "London No. 2 Lake Park",
-  },
-];
-
-const CustomTable: React.FC = () => {
+const CustomTable: React.FC<CustomTableProps> = ({ data }) => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
@@ -49,7 +23,7 @@ const CustomTable: React.FC = () => {
   const handleSearch = (
     selectedKeys: string[],
     confirm: FilterDropdownProps["confirm"],
-    dataIndex: DataIndex
+    dataIndex: string
   ) => {
     confirm();
     setSearchText(selectedKeys[0]);
@@ -62,8 +36,8 @@ const CustomTable: React.FC = () => {
   };
 
   const getColumnSearchProps = (
-    dataIndex: DataIndex
-  ): TableColumnType<DataType> => ({
+    dataIndex: string
+  ): TableColumnType<GenericDataType> => ({
     filterDropdown: ({
       setSelectedKeys,
       selectedKeys,
@@ -131,9 +105,9 @@ const CustomTable: React.FC = () => {
     ),
     onFilter: (value, record) =>
       record[dataIndex]
-        .toString()
+        ?.toString()
         .toLowerCase()
-        .includes((value as string).toLowerCase()),
+        .includes((value as string).toLowerCase()) || false,
     filterDropdownProps: {
       onOpenChange(open) {
         if (open) {
@@ -154,32 +128,29 @@ const CustomTable: React.FC = () => {
       ),
   });
 
-  const columns: TableColumnsType<DataType> = [
-    {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-      width: "30%",
-      ...getColumnSearchProps("name"),
-    },
-    {
-      title: "Age",
-      dataIndex: "age",
-      key: "age",
-      width: "20%",
-      ...getColumnSearchProps("age"),
-    },
-    {
-      title: "Address",
-      dataIndex: "address",
-      key: "address",
-      ...getColumnSearchProps("address"),
-      sorter: (a, b) => a.address.length - b.address.length,
+  // Generate columns dynamically from the first data object's keys
+  const generateColumns = (): TableColumnsType<GenericDataType> => {
+    if (!data || data.length === 0) return [];
+    
+    const firstItem = data[0];
+    return Object.keys(firstItem).map((key) => ({
+      title: key.charAt(0).toUpperCase() + key.slice(1), // Capitalize first letter
+      dataIndex: key,
+      key: key,
+      ...getColumnSearchProps(key),
+      sorter: (a, b) => {
+        if (typeof a[key] === 'string' && typeof b[key] === 'string') {
+          return a[key].localeCompare(b[key]);
+        }
+        return (a[key] || 0) - (b[key] || 0);
+      },
       sortDirections: ["descend", "ascend"],
-    },
-  ];
+    }));
+  };
 
-  return <Table columns={columns} dataSource={data} bordered />;
+  const columns = generateColumns();
+
+  return <Table  columns={columns} dataSource={data} bordered scroll={{ x: "max-content" }} />;
 };
 
 export default CustomTable;

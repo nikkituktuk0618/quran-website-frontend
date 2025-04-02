@@ -1,11 +1,11 @@
 import { getToken } from "./tokens";
 
 export const getHeaderConfig = (type) => {
+  const accessToken = getToken();
   switch (type) {
-    case "withtoken": {
-      const accessToken = getToken();
+    case "withToken": {
       return {
-        Authorization: `Bearer ${accessToken}`,
+        "Authorization": `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       };
     }

@@ -3,9 +3,42 @@ import CardList from "../common/CardList";
 import { useState } from "react";
 import CreateCourse from "./Course/CreateCourses";
 import { motion } from "framer-motion";
+import { Outlet, useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { getCaller } from "@/lib/apiCaller";
+import Loading from "../common/Loading";
+import { Empty } from "antd";
+
+const getAllCourses = async() =>{
+  const res = await getCaller({
+    url:"courses"
+  })
+  if(res.type === "success"){
+    return res.response
+  }
+  return [];
+}
 
 function Courses() {
+  const { courseID } = useParams();
   const [createCourses, setCreateCourses] = useState(false);
+  const {data:courses,isLoading,error} = useQuery({
+    queryKey:["courses"],
+    queryFn:getAllCourses
+   })
+   
+  if(courseID){
+    return <Outlet/>
+  }
+
+  if (isLoading) {
+    return <Loading/>
+  }
+
+  // Error state
+  if (error) {
+    return <div className="h-full w-full"><Empty/></div>;
+  }
 
   return (
     <div className="w-full pt-10 h-[calc(100%-50px)] flex justify-center ">
@@ -24,7 +57,7 @@ function Courses() {
           <CreateCourse setCreateCourses={setCreateCourses} />
         ) : (
           <motion.div
-            className="flex justify-center flex-wrap gap-2 md:gap-8"
+            className="flex justify-center md:justify-start flex-wrap gap-2 md:gap-8"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{
@@ -33,7 +66,7 @@ function Courses() {
               staggerChildren: 0.1,
             }}
           >
-            {coursesdata.map((item, index) => (
+            {courses?.map((item, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 10 }}
@@ -41,15 +74,14 @@ function Courses() {
                 transition={{ duration: 0.4, delay: index * 0.1 }}
               >
                 <CardList
-                  key={index}
-                  id={index}
+                  id={item.id}
                   content={item.content}
-                  creator={item.creator}
-                  rate={item.rate}
+                  creator={"Admin"}
+                  rate={item.fee_amount}
                   lessons={item.lessons}
-                  rating={item.rating}
-                  name={item.name}
-                  icon={item.icon}
+                  rating={4.5}
+                  name={item.title}
+                  icon={"/what_drives_me.png"}
                 />
               </motion.div>
             ))}

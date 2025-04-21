@@ -8,6 +8,7 @@ import {
   Plus,
   Search,
   Trash2,
+  X,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link, Outlet, useNavigate, useParams } from "react-router-dom";
@@ -21,6 +22,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Dialog,
+  DialogContent,
+  DialogOverlay,
+  DialogPortal,
+} from "@/components/ui/dialog";
 
 const getAllCourses = async (id) => {
   const res = await getCaller({
@@ -47,6 +54,8 @@ function PlaylistByID() {
 
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [deletingVideoID, setDeletingVideoID] = useState(null);
+  const [previewVideo, setPreviewVideo] = useState<string | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(()=>{
     refetch();
@@ -88,11 +97,17 @@ function PlaylistByID() {
     setCreateVideo(true);
   };
 
+  const handlePreviewClick = (videoUrl: string) => {
+    setPreviewVideo(videoUrl);
+    setIsDialogOpen(true);
+  };
+
   if (videoID) {
     return <Outlet />;
   }
 
   return (
+    <>
     <div className="w-full pt-10 h-[calc(100%-50px)]">
       {contextHolder}
 
@@ -202,7 +217,7 @@ function PlaylistByID() {
 
                         <div className="flex items-center justify-between mt-3">
                           {/* Options */}
-                          <Popover>
+                          <Popover >
                             <PopoverTrigger asChild>
                             <button className="p-2 rounded-full bg-gray-100 hover:bg-gray-200">
                               <MoreHorizontal
@@ -211,7 +226,12 @@ function PlaylistByID() {
                               />
                             </button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-36 bg-white border border-gray-300 rounded-lg shadow-lg z-10">
+                            <PopoverContent className="w-36 bg-white border border-gray-300 rounded-lg shadow-lg z-10 ml-20">
+                            <Link to={`video/${video.id}`}><div
+                                className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700"
+                              >
+                                Open
+                              </div></Link>
                               <button
                                 onClick={() => handleEdit()}
                                 className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700"
@@ -228,12 +248,12 @@ function PlaylistByID() {
                           </Popover>
 
                           {/* Preview Button */}
-                          <Link to={`video/${video.id}`}>
-                            <button className="flex items-center gap-2 px-4 py-1.5 border border-gray-300 rounded-lg hover:bg-gray-50">
+                          {/* <Link to={`video/${video.id}`}> */}
+                            <button onClick={() => handlePreviewClick("https://www.youtube.com/embed/ADDFmfOeihU")} className="flex items-center gap-2 px-4 py-1.5 border border-gray-300 rounded-lg hover:bg-gray-50">
                               <Play size={16} />
                               <span>Preview</span>
                             </button>
-                          </Link>
+                          {/* </Link> */}
                         </div>
                       </div>
                     </div>
@@ -245,6 +265,32 @@ function PlaylistByID() {
         </div>
       </section>
     </div>
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-4xl p-0 bg-black overflow-hidden">
+          <div className="relative aspect-video w-full">
+            {previewVideo && (
+              <iframe 
+                width="100%" 
+                height="100%" 
+                src={previewVideo}
+                title="Video Preview" 
+                frameBorder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                referrerPolicy="strict-origin-when-cross-origin" 
+                allowFullScreen
+                className="absolute inset-0"
+              ></iframe>
+            )}
+          </div>
+          <button 
+            onClick={() => setIsDialogOpen(false)} 
+            className="absolute right-4 top-4 rounded-full bg-black bg-opacity-50 p-1 text-white hover:bg-opacity-70 focus:outline-none"
+          >
+            <X className="h-6 w-6" />
+          </button>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 

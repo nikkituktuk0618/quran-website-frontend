@@ -73,7 +73,7 @@ const Admin = () => {
           </div>
 
           <div>
-            <span className="bg-blue-400 px-3 py-1 rounded-full font-semibold">
+            <span className="bg-blue-400 px-2 py-1 rounded-full font-semibold mr-2">
               A
             </span>
             <span className="font-semibold text-sm">Admin</span>

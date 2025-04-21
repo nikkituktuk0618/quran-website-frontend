@@ -21,6 +21,29 @@ export const adminPanelNavList = [
     }
 ]
 
+export const UserPanelNavList = [
+  // {
+  //     name:"Dashboard",
+  //     link:""
+  // },
+  // {
+  //     name:"Students",
+  //     link:"students"
+  // },
+  {
+      name:"My Courses",
+      link:"courses"
+  },
+  // {
+  //     name:"Create Playlist",
+  //     link:"createplaylist"
+  // },
+  // {
+  //     name:"Create Videos",
+  //     link:"createvideo"
+  // }
+]
+
 
 export const adminDashboardCardn = [
     {

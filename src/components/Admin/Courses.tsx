@@ -9,35 +9,43 @@ import { getCaller } from "@/lib/apiCaller";
 import Loading from "../common/Loading";
 import { Empty } from "antd";
 
-const getAllCourses = async() =>{
+const getAllCourses = async () => {
   const res = await getCaller({
-    url:"courses"
-  })
-  if(res.type === "success"){
-    return res.response
+    url: "courses",
+  });
+  if (res.type === "success") {
+    return res.response;
   }
   return [];
-}
+};
 
-function Courses() {
+function Courses({ creator = "Admin" }) {
   const { courseID } = useParams();
   const [createCourses, setCreateCourses] = useState(false);
-  const {data:courses,isLoading,error} = useQuery({
-    queryKey:["courses"],
-    queryFn:getAllCourses
-   })
-   
-  if(courseID){
-    return <Outlet/>
+  const {
+    data: courses,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["courses"],
+    queryFn: getAllCourses,
+  });
+
+  if (courseID) {
+    return <Outlet />;
   }
 
   if (isLoading) {
-    return <Loading/>
+    return <Loading />;
   }
 
   // Error state
   if (error) {
-    return <div className="h-full w-full"><Empty/></div>;
+    return (
+      <div className="h-full w-full">
+        <Empty />
+      </div>
+    );
   }
 
   return (
@@ -45,12 +53,14 @@ function Courses() {
       <section className="flex flex-col gap-10 w-full md:w-[95%]">
         <div className="flex justify-between items-center px-4 md:px-0">
           <h1 className="text-xl font-semibold">My Courses</h1>
-          <button
-            className="bg-blue-400 text-white px-3 py-1 rounded-lg"
-            onClick={() => setCreateCourses(!createCourses)}
-          >
-            {createCourses ? "Go Back" : "Create Course"}
-          </button>
+          {creator == "Admin" && (
+            <button
+              className="bg-blue-400 text-white px-3 py-1 rounded-lg"
+              onClick={() => setCreateCourses(!createCourses)}
+            >
+              {createCourses ? "Go Back" : "Create Course"}
+            </button>
+          )}
         </div>
 
         {createCourses ? (
@@ -76,7 +86,7 @@ function Courses() {
                 <CardList
                   id={item.id}
                   content={item.content}
-                  creator={"Admin"}
+                  creator={creator}
                   rate={item.fee_amount}
                   lessons={item.lessons}
                   rating={4.5}

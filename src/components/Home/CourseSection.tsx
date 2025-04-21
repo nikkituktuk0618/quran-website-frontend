@@ -5,8 +5,32 @@ import {
   CarouselPrevious,
   CarouselNext,
 } from "@/components/ui/carousel";
+import { getCaller } from "@/lib/apiCaller";
+import { useQuery } from "@tanstack/react-query";
+
+const getAllCourses = async () => {
+  const res = await getCaller({
+    url: "courses",
+  });
+  if (res.type === "success") {
+    return res.response;
+  }
+  return [
+    {
+      title:"",
+      description:"",
+      fee_amount:0
+    }
+  ];
+};
 
 const CoursesSection = () => {
+  const {
+    data: courses,
+  } = useQuery({
+    queryKey: ["courses"],
+    queryFn: getAllCourses,
+  });
   return (
     <section id="courses" className="relative">
       {/* Two-tone background */}
@@ -90,8 +114,8 @@ const CoursesSection = () => {
               }}
               className="w-full"
             >
-              <CarouselContent>
-                {[1, 2, 3].map((i) => (
+              <CarouselContent >
+                {courses?.map((i) => (
                   <CarouselItem key={i} className="pl-4 md:pl-6">
                     <div className="bg-black rounded-lg shadow-md p-5 space-y-3 border border-gray-100 max-w-full overflow-hidden text-white">
                       <img src="/course_carousel_1.png" alt="course1" />
@@ -108,18 +132,16 @@ const CoursesSection = () => {
                         ))}
                       </div>
                       <h3 className="font-abhaya font-bold text-3xl text-white">
-                        Quran Intermediate Course brother
+                        {i.title}
                       </h3>
                       <p className="text-gray-300 text-sm font-poppins">
-                        The Quran intermediate Course is for students with a
-                        basic understanding of the Quran, aiming to enhance
-                        their knowledge and skills.
+                        {i.description}
                       </p>
                       <div className="flex justify-between items-center pt-2">
                         <div>
-                          <p className="text-[#D9BC86] font-semibold">$16.00</p>
+                          <p className="text-[#D9BC86] font-semibold">${i.fee_amount}</p>
                           <p className="text-gray-400 text-xs ml-1">
-                            Course Free
+                            Course Fee
                           </p>
                         </div>
                         <button className="bg-[#4b7a69] text-white px-4 py-1 rounded-full text-sm font-medium hover:bg-[#3a6957] transition-colors">

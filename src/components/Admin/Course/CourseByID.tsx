@@ -36,7 +36,7 @@ function CourseByID() {
   });
 
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
-  const [deletingPlaylistID, setDeletingPlaylistID] = useState(null);
+  const [PlaylistID, setPlaylistID] = useState<number | null>(null);
 
   useEffect(()=>{
     refetch()
@@ -56,15 +56,15 @@ function CourseByID() {
 
   // Open the delete confirmation modal
   const showDeleteModal = (id) => {
-    setDeletingPlaylistID(id);
+    setPlaylistID(id);
     setDeleteModalVisible(true);
   };
 
   // Perform deletion if confirmed
   const handleDelete = async () => {
-    if (!deletingPlaylistID) return;
+    if (!PlaylistID) return;
 
-    const res = await deleteCaller({ url: `playlists/${deletingPlaylistID}` });
+    const res = await deleteCaller({ url: `playlists/${PlaylistID}` });
 
     if (res.type === "success") {
       showNotification("success", "Success", "Playlist deleted successfully");
@@ -74,10 +74,11 @@ function CourseByID() {
     }
 
     setDeleteModalVisible(false);
-    setDeletingPlaylistID(null);
+    setPlaylistID(null);
   };
 
-  const handleEdit = () => {
+  const handleEdit = (id) => {
+    setPlaylistID(id);
     setCreatePlaylist(true);
   };
 
@@ -123,7 +124,7 @@ function CourseByID() {
             </div>
 
             {createPlaylist ? (
-              <CreatePlaylist close={setCreatePlaylist} />
+              <CreatePlaylist close={setCreatePlaylist} updateID={PlaylistID}/>
             ) : (
               <>
                 <div className="relative my-6">
@@ -185,7 +186,7 @@ function CourseByID() {
                           </PopoverTrigger>
                           <PopoverContent className="w-32 bg-white border border-gray-300 rounded-md shadow-md z-10">
                             <button
-                              onClick={() => handleEdit()}
+                              onClick={() => handleEdit(playlist.id)}
                               className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700"
                             >
                               Edit

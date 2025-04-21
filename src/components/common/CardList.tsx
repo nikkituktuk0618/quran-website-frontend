@@ -40,14 +40,14 @@ export default function CardList({
         </CardContent>
 
         {/* Footer Section */}
-        <CardFooter className="flex justify-between">
+        {creator === "Admin" && <CardFooter className="flex justify-between">
           <span className="text-sm">{content} content</span>
           <Link to={`/admin/courses/${id}`}>
             <span className="text-sm bg-[#DEC88E] px-2 py-0.5 rounded-full cursor-pointer">
               View All
             </span>
           </Link>
-        </CardFooter>
+        </CardFooter>}
       </Card>
   );
 }

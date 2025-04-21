@@ -16,7 +16,22 @@ const getAllCourses = async() =>{
   return [];
 }
 
+// const getPlaylistByID = async(id) =>{
+//   const res = await getCaller({
+//     url:"courses"
+//   })
+//   if(res.type === "success"){
+//     return res.response
+//   }
+//   return [];
+// }
+
 const CreatePlaylist = ({close,updateID}:{close?:(val:boolean)=>void,updateID?:number}) => {
+  // const {data:playlistData} = useQuery({
+  //   queryKey:["courses",updateID],
+  //   queryFn:()=>getPlaylistByID(updateID!),
+  //   enabled: !!updateID
+  //  })
   const {data:courses} = useQuery({
     queryKey:["courses"],
     queryFn:getAllCourses

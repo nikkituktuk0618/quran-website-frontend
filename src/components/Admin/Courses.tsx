@@ -49,25 +49,26 @@ function Courses({ creator = "Admin" }) {
   }
 
   return (
-    <div className="w-full pt-10 h-[calc(100%-50px)] flex justify-center ">
+    <div className="w-full pt-10 h-[calc(100%-50px)] flex  ">
       <section className="flex flex-col gap-10 w-full md:w-[95%]">
-        <div className="flex justify-between items-center px-4 md:px-0">
-          <h1 className="text-xl font-semibold">My Courses</h1>
-          {creator == "Admin" && (
+        {creator == "Admin" && (
+          <div className="flex justify-between items-center px-4 md:px-0">
+            <h1 className="text-xl font-semibold">My Courses</h1>
+
             <button
               className="bg-blue-400 text-white px-3 py-1 rounded-lg"
               onClick={() => setCreateCourses(!createCourses)}
             >
               {createCourses ? "Go Back" : "Create Course"}
             </button>
-          )}
-        </div>
+          </div>
+        )}
 
         {createCourses ? (
           <CreateCourse setCreateCourses={setCreateCourses} />
         ) : (
           <motion.div
-            className="flex justify-center md:justify-start flex-wrap gap-2 md:gap-8"
+            className="flex justify-start flex-wrap gap-2 md:gap-8"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{

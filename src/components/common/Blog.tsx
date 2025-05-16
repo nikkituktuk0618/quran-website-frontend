@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Blog = () => {
   return (
@@ -192,9 +193,12 @@ const Blog = () => {
         </div> */}
 
         <div className="flex justify-center">
-          <button className="bg-[#D9BC86] text-[#392618] px-6 py-3 rounded-full font-medium hover:bg-[#c9ad79] transition-colors">
+          <Link
+            to="/login"
+            className="bg-[#D9BC86] text-[#392618] px-6 py-3 rounded-full font-medium hover:bg-[#c9ad79] transition-colors"
+          >
             JOIN NOW
-          </button>
+          </Link>
         </div>
       </div>
     </section>

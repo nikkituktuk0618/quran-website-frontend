@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const AboutSection = () => {
   return (
     <section id="about" className="section-padding pt-16">
@@ -38,8 +40,11 @@ const AboutSection = () => {
               340K+ followers on Instagram, and my goal remains the same—to
               bring people closer to the true essence of Islam.
             </p>
-            {/* Use react router to navigate */}
-            <button className="btn-primary">MORE ABOUT ME HERE</button>
+            <div className="my-4">
+              <Link to="/about" className="btn-primary">
+                MORE ABOUT ME HERE
+              </Link>
+            </div>
           </div>
           <div className="relative">
             <div className="glass-card p-6">

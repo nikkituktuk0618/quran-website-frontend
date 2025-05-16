@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const CommunityBanner = () => {
   return (
     <section className="relative py-20 overflow-hidden">
@@ -29,9 +31,12 @@ const CommunityBanner = () => {
           </p>
 
           <div className="text-left">
-            <button className="bg-[#D9BC86] text-[#392618] px-6 py-3 rounded-full font-medium hover:bg-[#c9ad79] transition-colors">
+            <Link
+              to="/login"
+              className="bg-[#D9BC86] text-[#392618] px-6 py-3 rounded-full font-medium hover:bg-[#c9ad79] transition-colors"
+            >
               JOIN NOW
-            </button>
+            </Link>
           </div>
         </div>
       </div>

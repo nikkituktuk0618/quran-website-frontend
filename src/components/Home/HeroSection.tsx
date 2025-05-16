@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const HeroSection = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
@@ -15,9 +17,14 @@ const HeroSection = () => {
             pleasure to the ways of peace and brings them out from darkness's
             into the light. <br /> 5:15-16
           </p>
-          <button className="bg-[#D9BC86] text-[#392618] px-8 py-3 rounded-full font-raleway font-bold hover:bg-[#c9ad79] transition-colors mt-8 animate-scale-in">
-            START YOUR JOURNEY
-          </button>
+          <div className="my-4">
+            <Link
+              to="/login"
+              className="bg-[#D9BC86] text-[#392618] px-8 py-3 my-4 rounded-full font-raleway font-bold hover:bg-[#c9ad79] transition-colors mt-8 animate-scale-in"
+            >
+              START YOUR JOURNEY
+            </Link>
+          </div>
         </div>
       </div>
     </section>

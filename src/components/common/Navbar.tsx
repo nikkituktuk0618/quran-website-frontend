@@ -75,14 +75,14 @@ const Navbar = () => {
             Courses
           </NavLink>
           <NavLink
-            to="/faq"
+            to="/selling"
             className={({ isActive }) =>
               `text-white/90 hover:text-white transition-colors cursor-pointer ${
                 isActive ? "text-white font-medium" : ""
               }`
             }
           >
-            FAQ
+            Selling
           </NavLink>
           <NavLink
             to="/contact"
@@ -176,15 +176,14 @@ const Navbar = () => {
                 Courses
               </NavLink>
               <NavLink
-                to="/faq"
+                to="/selling"
                 className={({ isActive }) =>
                   `p-4 text-white border-b border-white/10 hover:bg-[#4a3220] transition-colors cursor-pointer ${
                     isActive ? "bg-[#4a3220]" : ""
                   }`
                 }
-                onClick={closeMobileMenu}
               >
-                FAQ
+                Selling
               </NavLink>
               <NavLink
                 to="/contact"

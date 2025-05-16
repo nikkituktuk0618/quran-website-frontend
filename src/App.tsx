@@ -3,16 +3,16 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ScrollToTop from "./components/common/ScrollToTop";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import Admin from "./pages/Admin";
+import Selling from "./pages/Selling";
 import ProtectedRoutes from "./components/common/ProtectedRoutes";
 import AdminLogin from "./pages/AdminLogin";
-import Videos from "./components/Admin/Videos";
-import Playlists from "./components/Admin/Playlists";
 import Students from "./components/Admin/Students";
 import Courses from "./components/Admin/Courses";
 import PlaylistByID from "./components/Admin/PlayList/PlaylistByID";
@@ -23,6 +23,7 @@ import CreatePlaylist from "./components/Admin/PlayList/CreatePlaylist";
 import PublicCourses from "./pages/PublicCourses";
 import UserCourses from "./components/User/Courses/UserCourses";
 import Playlist from "./components/User/Playlist/playlist";
+import Contact from "./pages/Contact";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +33,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
@@ -39,6 +41,8 @@ const App = () => (
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/courses" element={<PublicCourses />} />
+          <Route path="/selling" element={<Selling />} />
+          <Route path="/contact" element={<Contact />} />
           <Route path="/dailyquran/admin/login" element={<AdminLogin />} />
 
           {/*................. for user................. */}

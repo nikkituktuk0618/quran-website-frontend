@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -27,31 +28,29 @@ const Footer = () => {
       {/* Navigation Menu */}
       <div className="relative z-10 flex justify-center py-4">
         <nav className="flex flex-wrap justify-center space-x-6 text-sm">
-          <a href="#" className="px-4 py-2 hover:text-primary">
+          <Link to="/about" className="px-4 py-2 hover:text-primary">
             About Me
-          </a>
-          <a href="#" className="px-4 py-2 hover:text-primary">
+          </Link>
+          <Link to="/courses" className="px-4 py-2 hover:text-primary">
             Courses and Classes
-          </a>
-          <a href="#" className="px-4 py-2 hover:text-primary">
+          </Link>
+          <Link to="/blog" className="px-4 py-2 hover:text-primary">
             Blog
-          </a>
-          <a href="#" className="px-4 py-2 hover:text-primary">
+          </Link>
+          <Link to="/students" className="px-4 py-2 hover:text-primary">
             Student's Space
-          </a>
-          <a href="#" className="px-4 py-2 hover:text-primary">
+          </Link>
+          <Link to="/contact" className="px-4 py-2 hover:text-primary">
             Contact
-          </a>
-          <a href="#" className="px-4 py-2 hover:text-primary">
-            FAQ
-          </a>
+          </Link>
         </nav>
       </div>
 
       {/* Social Media Icons */}
       <div className="relative z-10 flex justify-center space-x-6 py-4">
         <a
-          href="#"
+          href="https://www.instagram.com/al_faiz_saifi/"
+          target="_blank"
           className="w-10 h-10 flex items-center justify-center rounded-full border border-white/30 hover:bg-white/10"
         >
           <svg
@@ -70,7 +69,8 @@ const Footer = () => {
           </svg>
         </a>
         <a
-          href="#"
+          href="https://www.youtube.com/@al_faizsaifi"
+          target="_blank"
           className="w-10 h-10 flex items-center justify-center rounded-full border border-white/30 hover:bg-white/10"
         >
           <svg

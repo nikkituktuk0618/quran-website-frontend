@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/carousel";
 import { getCaller } from "@/lib/apiCaller";
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
 
 const getAllCourses = async () => {
   const res = await getCaller({
@@ -17,17 +18,15 @@ const getAllCourses = async () => {
   }
   return [
     {
-      title:"",
-      description:"",
-      fee_amount:0
-    }
+      title: "",
+      description: "",
+      fee_amount: 0,
+    },
   ];
 };
 
 const CoursesSection = () => {
-  const {
-    data: courses,
-  } = useQuery({
+  const { data: courses } = useQuery({
     queryKey: ["courses"],
     queryFn: getAllCourses,
   });
@@ -101,9 +100,14 @@ const CoursesSection = () => {
                 </div>
               </div>
             </div>
-            <button className="bg-[#D9BC86] text-[#392618] px-6 py-3 rounded-full font-medium hover:bg-[#c9ad79] transition-colors mt-4">
-              START LEARNING TODAY!
-            </button>
+            <div className="my-4">
+              <Link
+                to="/courses"
+                className="bg-[#D9BC86] text-[#392618] px-6 py-3 rounded-full font-medium hover:bg-[#c9ad79] transition-colors mt-4 inline-block"
+              >
+                START LEARNING TODAY!
+              </Link>
+            </div>
           </div>
 
           {/* Right Column - Course Cards */}
@@ -114,7 +118,7 @@ const CoursesSection = () => {
               }}
               className="w-full"
             >
-              <CarouselContent >
+              <CarouselContent>
                 {courses?.map((i) => (
                   <CarouselItem key={i} className="pl-4 md:pl-6">
                     <div className="bg-black rounded-lg shadow-md p-5 space-y-3 border border-gray-100 max-w-full overflow-hidden text-white">
@@ -139,7 +143,9 @@ const CoursesSection = () => {
                       </p>
                       <div className="flex justify-between items-center pt-2">
                         <div>
-                          <p className="text-[#D9BC86] font-semibold">${i.fee_amount}</p>
+                          <p className="text-[#D9BC86] font-semibold">
+                            ${i.fee_amount}
+                          </p>
                           <p className="text-gray-400 text-xs ml-1">
                             Course Fee
                           </p>

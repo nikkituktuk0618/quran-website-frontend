@@ -19,7 +19,7 @@ const getAllCourses = async () => {
   return [];
 };
 
-function Courses({ creator = "Admin" }) {
+function Courses({ creator = "Admin",handleUserRoute = (id)=>{} }) {
   const { courseID } = useParams();
   const [createCourses, setCreateCourses] = useState(false);
   const {
@@ -93,6 +93,7 @@ function Courses({ creator = "Admin" }) {
                   rating={4.5}
                   name={item.title}
                   icon={"/what_drives_me.png"}
+                  handleUserRoute={handleUserRoute}
                 />
               </motion.div>
             ))}

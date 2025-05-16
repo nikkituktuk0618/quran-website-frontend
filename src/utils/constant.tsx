@@ -21,6 +21,13 @@ export const adminPanelNavList = [
     }
 ]
 
+export const loggedInUser = [
+    {
+        name:"Dashboard",
+        link:""
+    },
+]
+
 export const UserPanelNavList = [
   // {
   //     name:"Dashboard",

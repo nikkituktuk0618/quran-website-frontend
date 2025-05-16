@@ -3,7 +3,7 @@ import { decodeToken, isTokenExpired } from "@/utils/helper/tokens";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function ProtectedRoutes({ children }) {
+function ProtectedRoutes({ children, type = "admin" }) {
   const [loading, setLoading] = useState({
     loading: true,
     unautherized: false,
@@ -13,10 +13,38 @@ function ProtectedRoutes({ children }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    authenticateUser();
-  }, []);
+    if (type === "admin") {
+      authenticateAdmin();
+    } else {
+      authenticateUser();
+    }
+  }, [type]);
 
   const authenticateUser = () => {
+    const decodedToken = decodeToken();
+    if (decodedToken?.role === "student") {
+      if (isTokenExpired(decodedToken?.exp)) {
+        setTokenExpired(true);
+        setLoading({
+          loading: false,
+          unautherized: false,
+        });
+      } else {
+        setLoading({
+          loading: false,
+          unautherized: false,
+        });
+      }
+    } else {
+      setLoading({
+        loading: false,
+        unautherized: true,
+      });
+      navigate("/login");
+    }
+  };
+
+  const authenticateAdmin = () => {
     const decodedToken = decodeToken();
     if (decodedToken?.role === "admin") {
       if (isTokenExpired(decodedToken?.exp)) {
@@ -42,7 +70,11 @@ function ProtectedRoutes({ children }) {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    navigate("/dailyquran/admin/login");
+    if (type === "admin") {
+      navigate("/dailyquran/admin/login");
+    } else {
+      navigate("/login");
+    }
   };
 
   return (

@@ -37,6 +37,8 @@ const Login = () => {
     if (response.type === "success") {
       const _data = response.response;
       localStorage.setItem("accessToken",_data?.token)
+      localStorage.setItem("user",JSON.stringify(_data))
+      route("/dashboard")
     }else if(response.type === "error"){
       showNotification("error","Failed to login",response.message.error)
     }

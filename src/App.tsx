@@ -21,6 +21,8 @@ import VideoByID from "./components/Admin/Videos/VideoByID";
 import CreateVideo from "./components/Admin/Videos/CreateVideos";
 import CreatePlaylist from "./components/Admin/PlayList/CreatePlaylist";
 import PublicCourses from "./pages/PublicCourses";
+import UserCourses from "./components/User/Courses/UserCourses";
+import Playlist from "./components/User/Playlist/playlist";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +41,25 @@ const App = () => (
           <Route path="/courses" element={<PublicCourses />} />
           <Route path="/dailyquran/admin/login" element={<AdminLogin />} />
 
+          {/*................. for user................. */}
+
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoutes type="student">
+                <UserCourses />
+              </ProtectedRoutes>
+            }
+          />
+
+          <Route
+              path="/playlist/:playlistID"
+              element={
+                <ProtectedRoutes type="student">
+                  <Playlist />
+                </ProtectedRoutes>
+              }
+            />
 
           {/*................. for admin................. */}
           <Route
@@ -61,7 +82,7 @@ const App = () => (
               path="createplaylist"
               element={
                 <ProtectedRoutes>
-                  <CreatePlaylist/>
+                  <CreatePlaylist />
                 </ProtectedRoutes>
               }
             />
@@ -112,7 +133,7 @@ const App = () => (
               path="createvideo"
               element={
                 <ProtectedRoutes>
-                  <CreateVideo/>
+                  <CreateVideo />
                 </ProtectedRoutes>
               }
             />

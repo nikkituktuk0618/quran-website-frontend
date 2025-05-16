@@ -22,8 +22,8 @@ import CreateVideo from "./components/Admin/Videos/CreateVideos";
 import CreatePlaylist from "./components/Admin/PlayList/CreatePlaylist";
 import PublicCourses from "./pages/PublicCourses";
 import UserCourses from "./components/User/Courses/UserCourses";
-import Playlist from "./components/User/Playlist/playlist";
 import Contact from "./pages/Contact";
+import Playlist from "./components/User/Playlist/Playlist";
 
 const queryClient = new QueryClient();
 

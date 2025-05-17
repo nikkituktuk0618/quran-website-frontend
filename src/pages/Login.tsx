@@ -1,3 +1,4 @@
+import useNotification from "@/hooks/useNotification";
 import { postCaller } from "@/lib/apiCaller";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -9,6 +10,7 @@ const Login = () => {
     password: "",
   });
   const route = useNavigate();
+  const {contextHolder,showNotification} = useNotification()
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -21,7 +23,8 @@ const Login = () => {
     }));
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e:React.ChangeEvent<HTMLFormElement>) => {
+    e.preventDefault()
     const payload = {
       email: userData.email,
       password: userData.password,
@@ -32,11 +35,18 @@ const Login = () => {
       type: "withoutToken",
     });
     if (response.type === "success") {
-      console.log(response.response);
+      const _data = response.response;
+      localStorage.setItem("accessToken",_data?.token)
+      localStorage.setItem("user",JSON.stringify(_data))
+      route("/dashboard")
+    }else if(response.type === "error"){
+      showNotification("error","Failed to login",response.message.error)
     }
   };
 
   return (
+    <>
+    {contextHolder}
     <div className="flex min-h-screen">
       {/* Left side - Image placeholder (will be hidden on mobile) */}
       <div className="hidden md:flex md:w-1/2 relative">
@@ -68,7 +78,7 @@ const Login = () => {
           </h1>
 
           {/* Google Sign In Button */}
-          <button className="w-full flex items-center justify-center border border-gray-300 rounded-full py-2 px-4 mb-4 hover:bg-gray-50 transition-colors">
+          {/* <button className="w-full flex items-center justify-center border border-gray-300 rounded-full py-2 px-4 mb-4 hover:bg-gray-50 transition-colors">
             <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
               <path
                 fill="#4285F4"
@@ -94,10 +104,10 @@ const Login = () => {
             <div className="flex-1 border-t border-gray-300"></div>
             <div className="px-3 text-gray-500 text-sm">or</div>
             <div className="flex-1 border-t border-gray-300"></div>
-          </div>
+          </div> */}
 
           {/* Email Form */}
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-1 font-poppins">
                 Email
@@ -170,7 +180,7 @@ const Login = () => {
             <button
               type="submit"
               className="w-full bg-[#DEC88E] hover:bg-[#beab79] text-black font-medium py-2 px-4 rounded-full transition-colors mb-6 font-poppins"
-              onClick={handleSubmit}
+              
             >
               LOGIN
             </button>
@@ -196,6 +206,7 @@ const Login = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

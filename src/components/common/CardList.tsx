@@ -18,6 +18,7 @@ export default function CardList({
   content,
   icon,
   id,
+  handleUserRoute
 }) {
   return (
       <Card  className="md:w-64 w-[180px] p-4">
@@ -47,6 +48,12 @@ export default function CardList({
               View All
             </span>
           </Link>
+        </CardFooter>}
+        {creator === "student" && <CardFooter className="flex justify-between">
+          <span className="text-sm">{content} content</span>
+            <span onClick={()=>{handleUserRoute(id)}} className="text-sm bg-[#DEC88E] px-2 py-0.5 rounded-full cursor-pointer">
+              View All
+            </span>
         </CardFooter>}
       </Card>
   );

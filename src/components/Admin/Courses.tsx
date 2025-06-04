@@ -26,6 +26,7 @@ function Courses({ creator = "Admin",handleUserRoute = (id)=>{} }) {
     data: courses,
     isLoading,
     error,
+    refetch
   } = useQuery({
     queryKey: ["courses"],
     queryFn: getAllCourses,
@@ -50,7 +51,7 @@ function Courses({ creator = "Admin",handleUserRoute = (id)=>{} }) {
 
   return (
     <div className="w-full pt-10 h-[calc(100%-50px)] flex  ">
-      <section className="flex flex-col gap-10 w-full md:w-[95%]">
+      <section className="flex flex-col pl-5 gap-10 w-full md:w-[95%]">
         {creator == "Admin" && (
           <div className="flex justify-between items-center px-4 md:px-0">
             <h1 className="text-xl font-semibold">My Courses</h1>
@@ -65,7 +66,7 @@ function Courses({ creator = "Admin",handleUserRoute = (id)=>{} }) {
         )}
 
         {createCourses ? (
-          <CreateCourse setCreateCourses={setCreateCourses} />
+          <CreateCourse setCreateCourses={setCreateCourses} refetch={refetch}/>
         ) : (
           <motion.div
             className="flex justify-start flex-wrap gap-2 md:gap-8"

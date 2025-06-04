@@ -2,6 +2,7 @@ import useNotification from "@/hooks/useNotification";
 import { getCaller, postCaller } from "@/lib/apiCaller";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const getAllCourses = async() =>{
   const res = await getCaller({
@@ -31,6 +32,7 @@ const CreateVideo = ({close}:{close?:(val:boolean)=>void}) => {
   const [videoUrl, setVideoUrl] = useState("");
   const [duration, setDuration] = useState("00:00");
   const {contextHolder,showNotification} = useNotification();
+  const route = useNavigate()
 
   // Fetch playlists based on selected course
   const { data: playlists = [] } = useQuery({
@@ -57,7 +59,10 @@ const CreateVideo = ({close}:{close?:(val:boolean)=>void}) => {
             "Success",
             "Course created successfully"
           )
-          
+          setTimeout(()=>{
+            close(false)
+            route(`/admin/courses/${selectedCourseId}/playlist/${playlist}`)
+          },1000)
         }else{
           showNotification(
             "error",

@@ -4,7 +4,7 @@ import useNotification from "@/hooks/useNotification";
 import { getCaller, postCaller } from "@/lib/apiCaller";
 import { useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const getAllCourses = async() =>{
   const res = await getCaller({
@@ -43,6 +43,7 @@ const CreatePlaylist = ({close,updateID}:{close?:(val:boolean)=>void,updateID?:n
     playlist_order: 0, // Default order, can be changed by user
     thumbnail_url: "",
   });
+  const route = useNavigate()
 
   const {contextHolder,showNotification} = useNotification();
 
@@ -71,6 +72,10 @@ const CreatePlaylist = ({close,updateID}:{close?:(val:boolean)=>void,updateID?:n
         "Success",
         "Course created successfully"
       )
+      setTimeout(()=>{
+        close(false)
+        route(`/admin/courses/${formData.course_id}`)
+      },1000)
     }else{
       showNotification(
         "error",

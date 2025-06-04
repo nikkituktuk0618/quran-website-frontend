@@ -10,7 +10,7 @@ const initalState = {
     createdby: 0,
 }
 
-const CreateCourse = ({ setCreateCourses }) => {
+const CreateCourse = ({ setCreateCourses,refetch }) => {
   const [formData, setFormData] = useState(initalState);
   const {contextHolder,showNotification} = useNotification();
 
@@ -32,7 +32,7 @@ const CreateCourse = ({ setCreateCourses }) => {
     const payload = {
       title: formData.title,
       description: formData.description,
-      fee_amount: formData.feeamount,
+      fee_amount: Number(formData.feeamount),
       fee_type: formData.feetype,
       created_by: 1,
     };
@@ -47,7 +47,10 @@ const CreateCourse = ({ setCreateCourses }) => {
         "Success",
         "Course created successfully"
       )
-      
+      setTimeout(()=>{
+        refetch()
+        setCreateCourses((prev)=>!prev)
+      },1000)
     }else{
       showNotification(
         "error",
@@ -98,8 +101,8 @@ const CreateCourse = ({ setCreateCourses }) => {
         <div>
           <label className="block text-gray-700 font-medium">Amount</label>
           <input
-            type="text"
-            placeholder="RS250"
+            type="number"
+            placeholder="250"
             className="w-full mt-1 p-2 border rounded-md focus:ring focus:ring-blue-300"
             onChange={(e) => handleChange(e, "feeamount")}
           />

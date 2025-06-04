@@ -9,9 +9,13 @@
 @tailwind components;
 @tailwind utilities;
 
+
+html{
+  overflow-x: hidden;
+}
 @layer base {
   body {
-    @apply bg-secondary text-secondary-foreground font-inter;
+    @apply bg-secondary text-secondary-foreground font-inter overflow-x-hidden;
   }
 
   h1,

@@ -156,7 +156,7 @@ function PlaylistByID() {
           </div>
 
           {createVideo ? (
-            <CreateVideo close={setCreateVideo} />
+            <CreateVideo close={setCreateVideo}/>
           ) : (
             <>
               <div className="relative my-6">
@@ -249,7 +249,7 @@ function PlaylistByID() {
 
                           {/* Preview Button */}
                           {/* <Link to={`video/${video.id}`}> */}
-                            <button onClick={() => handlePreviewClick("https://www.youtube.com/embed/ADDFmfOeihU")} className="flex items-center gap-2 px-4 py-1.5 border border-gray-300 rounded-lg hover:bg-gray-50">
+                            <button onClick={() => handlePreviewClick(video?.video_url)} className="flex items-center gap-2 px-4 py-1.5 border border-gray-300 rounded-lg hover:bg-gray-50">
                               <Play size={16} />
                               <span>Preview</span>
                             </button>

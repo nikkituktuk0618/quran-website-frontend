@@ -4,7 +4,7 @@ const HeroSection = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
       <div className="absolute inset-0" />
-      <div className="absolute inset-0 bg-[url('/hero_image.png')] bg-cover bg-center" />
+      <div className="absolute inset-0 bg-[url('/hero_image.png')] bg-cover bg-no-repeat bg-center" />
       <div className="container relative z-10 px-6 pt-16 pb-20">
         <div className="max-w-3xl">
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-berkshire font-bold text-white leading-tight animate-fade-in">

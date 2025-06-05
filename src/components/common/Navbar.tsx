@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { Link, NavLink } from "react-router-dom";
+import useAuth from "@/hooks/useAuth";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const role = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -108,13 +110,31 @@ const Navbar = () => {
         </div>
 
         {/* Desktop CTA */}
-        <div className="hidden md:flex items-center gap-4">
-          <Link to="/signup">
-            <button className="bg-[#D9BC86] text-[#392618] px-6 py-2 rounded-full font-medium hover:bg-[#c9ad79] transition-colors">
-              Join Now
-            </button>
-          </Link>
-        </div>
+        {role ? (
+              <div className="p-4">
+                {role === "admin" ? (
+                  <Link to="/admin" onClick={closeMobileMenu}>
+                    <button className="w-full bg-[#D9BC86] text-[#392618] px-6 py-3 rounded-full font-medium hover:bg-[#c9ad79] transition-colors">
+                      Dashboard
+                    </button>
+                  </Link>
+                ) : (
+                  <Link to="/dashboard" onClick={closeMobileMenu}>
+                    <button className="w-full bg-[#D9BC86] text-[#392618] px-6 py-3 rounded-full font-medium hover:bg-[#c9ad79] transition-colors">
+                      Dashboard
+                    </button>
+                  </Link>
+                )}
+              </div>
+            ) : (
+              <div className="p-4">
+                <Link to="/signup" onClick={closeMobileMenu}>
+                  <button className="w-full bg-[#D9BC86] text-[#392618] px-6 py-3 rounded-full font-medium hover:bg-[#c9ad79] transition-colors">
+                    Join Now
+                  </button>
+                </Link>
+              </div>
+            )}
       </div>
 
       {/* Mobile Navigation */}
@@ -199,13 +219,32 @@ const Navbar = () => {
             </nav>
 
             {/* CTA Button */}
-            <div className="p-4">
-              <Link to="/signup" onClick={closeMobileMenu}>
-                <button className="w-full bg-[#D9BC86] text-[#392618] px-6 py-3 rounded-full font-medium hover:bg-[#c9ad79] transition-colors">
-                  Join Now
-                </button>
-              </Link>
-            </div>
+
+            {role ? (
+              <div className="p-4">
+                {role === "admin" ? (
+                  <Link to="/admin" onClick={closeMobileMenu}>
+                    <button className="w-full bg-[#D9BC86] text-[#392618] px-6 py-3 rounded-full font-medium hover:bg-[#c9ad79] transition-colors">
+                      Dashboard
+                    </button>
+                  </Link>
+                ) : (
+                  <Link to="/dashboard" onClick={closeMobileMenu}>
+                    <button className="w-full bg-[#D9BC86] text-[#392618] px-6 py-3 rounded-full font-medium hover:bg-[#c9ad79] transition-colors">
+                      Dashboard
+                    </button>
+                  </Link>
+                )}
+              </div>
+            ) : (
+              <div className="p-4">
+                <Link to="/signup" onClick={closeMobileMenu}>
+                  <button className="w-full bg-[#D9BC86] text-[#392618] px-6 py-3 rounded-full font-medium hover:bg-[#c9ad79] transition-colors">
+                    Join Now
+                  </button>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       )}
